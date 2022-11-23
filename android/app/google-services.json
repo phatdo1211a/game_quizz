@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "164449716827",
+    "project_id": "signin-1683e",
+    "storage_bucket": "signin-1683e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164449716827:android:a0d35eb8fde25901344d7e",
+        "android_client_info": {
+          "package_name": "com.example.game_quizz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "164449716827-pmev9hrnlbq4r50g9coca7drdbmhi3pj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZlmsN429IUOaaCFdbQxdCvgpyABRaQWQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "164449716827-pmev9hrnlbq4r50g9coca7drdbmhi3pj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
