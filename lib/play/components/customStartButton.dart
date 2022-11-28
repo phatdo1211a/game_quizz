@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:game_quizz/play/views/questions_page.dart';
 import 'package:game_quizz/screens/login.dart';
 import 'package:game_quizz/screens/nextpage.dart';
@@ -23,7 +22,7 @@ Container customStartButton({required BuildContext context}) {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(1.0),
             child: Center(
               child: Text(
                 'Bắt đầu',

@@ -1,12 +1,28 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:game_quizz/play/components/customStartButton.dart';
 import 'package:game_quizz/screens/login.dart';
 import 'package:game_quizz/screens/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class Register extends StatelessWidget {
+class Register extends StatefulWidget {
   const Register({super.key});
 
   @override
+  State<Register> createState() => _RegisterState();
+}
+
+class _RegisterState extends State<Register> {
+  bool _showPass= false;
+  TextEditingController _txtName = TextEditingController();
+  TextEditingController _txtEmail = TextEditingController();
+  TextEditingController _txtPass = TextEditingController();
+  TextEditingController _txtPhone = TextEditingController();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  @override
   Widget build(BuildContext context) {
+    const edgeInsets = EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0);
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -16,15 +32,160 @@ class Register extends StatelessWidget {
             children: [
               _image(context),
               _header(context),
-              _input(context),
-              _signup(context),
-            ],
-          ),
-        ),
+             
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      child: TextField(
+                        controller: _txtName,
+                        decoration: InputDecoration(
+                          hintText: "Tên đăng nhập",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide.none,
+                          ),
+                          fillColor:
+                              Theme.of(context).primaryColor.withOpacity(0.1),
+                          filled: true,
+                          prefixIcon: Icon(Icons.person),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      child: TextField(
+                        controller: _txtPhone,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          hintText: "Số điện thoại",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide.none,
+                          ),
+                          fillColor:
+                              Theme.of(context).primaryColor.withOpacity(0.1),
+                          filled: true,
+                          prefixIcon: Icon(Icons.phone_android),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      child: TextField(
+                        controller: _txtEmail,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          hintText: "Email",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide.none,
+                          ),
+                          fillColor:
+                              Theme.of(context).primaryColor.withOpacity(0.1),
+                          filled: true,
+                          prefixIcon: Icon(Icons.email),
+                        ),
+                      ),
+                    ),
+                     Padding(
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      child: Stack(
+                        alignment: AlignmentDirectional.centerEnd,
+                        children: [
+                          TextField(
+                            obscureText: !_showPass,
+                            controller: _txtPass,
+                            decoration: InputDecoration(
+                              hintText: "Mật khẩu",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                borderSide: BorderSide.none,
+                              ),
+                              fillColor: Theme.of(context)
+                                  .primaryColor
+                                  .withOpacity(0.1),
+                              filled: true,
+                              prefixIcon: Icon(Icons.password_outlined),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap:inTongleShowPass,
+                            child: Text(
+                              _showPass?"HIDE":"SHOW",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            try {
+                              CollectionReference users =
+                                  FirebaseFirestore.instance.collection('users');
+                              _firebaseAuth
+                                  .createUserWithEmailAndPassword(
+                                      email: _txtEmail.text,
+                                      password: _txtPass.text)
+                                  .then((value) => users.add({
+                                        'name': _txtName.text,
+                                        'phone': _txtPhone.text,
+                                      }))
+                                  .then((value) {
+                                final snackBar =
+                                    SnackBar(content: Text('Đăng kí thành công'));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                                Navigator.pop(context, snackBar);
+                              }).catchError((error) {
+                                final snackBar = SnackBar(
+                                    content: Text('Tài khoản không hợp lệ'));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              });
+                            } catch (e) {
+                              final snackBar =
+                                  SnackBar(content: Text('Có lỗi xảy ra'));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            }
+                          },
+                          child: Text(
+                            "Đăng kí",
+                            style: TextStyle(
+                                fontSize: 26, fontWeight: FontWeight.w400),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: Size(400, 55),
+                            shape: StadiumBorder(),
+                          )),
+                    ),
+                      _signup(context),
+                  ],
+                ),
+              ),
+            
       ),
     );
   }
-}
+
+  @override
+  void dispose() {
+    _txtEmail.dispose();
+    _txtPass.dispose();
+    _txtName.dispose();
+    super.dispose();
+  }
+  @override
+ void inTongleShowPass() {
+    setState(() {
+      _showPass = !_showPass;
+    });
+  }
 
 _image(context) {
   return Column(
@@ -48,103 +209,6 @@ _header(context) {
   );
 }
 
-_input(context) {
-  const edgeInsets = EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0);
-  return Container(
-    padding: edgeInsets,
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        TextField(
-          decoration: InputDecoration(
-            hintText: "Email",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide.none,
-            ),
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
-            filled: true,
-            prefixIcon: Icon(Icons.mail),
-          ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        TextField(
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            hintText: "Số điện thoại",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide.none,
-            ),
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
-            filled: true,
-            prefixIcon: Icon(Icons.phone),
-          ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        TextField(
-          decoration: InputDecoration(
-            hintText: "Tên đăng nhập",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide.none,
-            ),
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
-            filled: true,
-            prefixIcon: Icon(Icons.person),
-          ),
-        ),
-        SizedBox(height: 20),
-        TextField(
-          obscureText: true,
-          decoration: InputDecoration(
-            hintText: "Mật khẩu",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide.none,
-            ),
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
-            filled: true,
-            prefixIcon: Icon(Icons.key),
-          ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        TextField(
-          obscureText: true,
-          decoration: InputDecoration(
-            hintText: "Nhập lại mật khẩu",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide.none,
-            ),
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
-            filled: true,
-            prefixIcon: Icon(Icons.key),
-          ),
-        ),
-        SizedBox(height: 20),
-        ElevatedButton(
-            onPressed: () {},
-            child: Text(
-              "Đăng kí",
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.w400),
-            ),
-            style: ElevatedButton.styleFrom(
-              fixedSize: Size(200, 60),
-              shape: StadiumBorder(),
-              padding: edgeInsets,
-            ))
-      ],
-    ),
-  );
-}
-
 _signup(context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
@@ -164,4 +228,5 @@ _signup(context) {
           ))
     ],
   );
+}
 }

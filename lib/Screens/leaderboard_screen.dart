@@ -55,7 +55,7 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
                       icon: const Icon(Icons.arrow_back_ios, color: Colors.white,)),
                   const SizedBox(width: 10),
                   const Text(
-                    'Leaderboard',
+                    'Bảng xếp hạng',
                     style: TextStyle(fontSize: 23, color: Colors.white),
                   ),
                 ],
@@ -72,16 +72,16 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
                     child: Row(
                       children: [
                         BoxLeaderBoard(
-                          rank: 1,
+                          rank: 2,
                           image: Image.network(src1),
-                          name: 'nguyen van nho',
+                          name: 'nguyen van dang khoa',
                           points: 10000,
                           padding: 0,
                         ),
                         BoxLeaderBoard(
-                          rank: 2,
+                          rank: 1,
                           image: Image.network(src2),
-                          name: 'noname',
+                          name: 'nguyen van nho',
                           points: 5000,
                           padding: 60,
                         ),
