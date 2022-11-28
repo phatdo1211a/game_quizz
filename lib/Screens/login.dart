@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:game_quizz/screens/home.dart';
@@ -101,12 +102,26 @@ class _LoginAppState extends State<LoginApp> {
                       child: ElevatedButton(
                         onPressed: () async {
                           try {
+
+
                             final _user =
                                 await _firebaseAuth.signInWithEmailAndPassword(
                                     email: _txtEmail.text,
                                     password: _txtPass.text);
                             _firebaseAuth.authStateChanges().listen((event) {
                               if (event != null) {
+
+//
+
+// final userAccount=FirebaseFirestore.instance.collection("users").get().then((value) {
+//   value.docs.forEach((element) {
+//     element.data()['name'];
+//   });
+// } );
+
+//
+
+
                                 _txtEmail.clear();
                                 _txtPass.clear();
                                 Navigator.push(

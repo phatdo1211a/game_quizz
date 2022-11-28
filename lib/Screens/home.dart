@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:game_quizz/Screens/leaderboard_screen.dart';
-import 'package:game_quizz/Screens/nextpage.dart';
 import 'package:game_quizz/play/views/questions_page.dart';
 import 'package:game_quizz/provider/google_sign_in.dart';
+import 'package:game_quizz/screens/leaderboard_screen.dart';
+import 'package:game_quizz/screens/nextpage.dart';
 import 'package:game_quizz/screens/quizz_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -160,27 +160,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget HeaderBuild(BuildContext context) {
     var user = FirebaseAuth.instance.currentUser;
-    return user != null
-        ? Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: Column(
-              children: [
-                UserAccountsDrawerHeader(
+    return user != null? UserAccountsDrawerHeader(
                   decoration: BoxDecoration(
                     color: Color.fromARGB(255, 28, 100, 0),
                   ),
-                  accountName: Text(user.displayName!),
+                  accountName: Text('User'),
                   accountEmail: Text(user.email!),
                   currentAccountPicture: CircleAvatar(
                     radius: 50,
-                    backgroundImage: NetworkImage(user
-                        .photoURL!), //'https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_960_720.png', scale: 20),
+                    backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_960_720.png', scale: 20),//')//user.photoURL!), //
                     backgroundColor: Color.fromARGB(255, 28, 100, 0),
                   ),
-                ),
-              ],
-            ),
-          )
+                )
         : Center(
             child: CircularProgressIndicator(),
           );

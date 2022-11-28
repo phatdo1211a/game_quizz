@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:nasa/providers/leaderboard.dart';
 
 import '../play/components/box_leader_board.dart';
 
@@ -34,9 +33,12 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
   Widget build(BuildContext context) {
     // final leaderboardFuture = ref.watch(futureLeaderboardProvider);
     // final leaderboard = ref.watch(leaderboardProvider);
-    final String src3 ='https://jako.edu.vn/anh-dai-dien-fb-cute/imager_1_45424_700.jpg';
-    final String src2 ='https://jako.edu.vn/anh-dai-dien-fb-cute/imager_2_45424_700.jpg';
-    final String src1 ='https://jako.edu.vn/anh-dai-dien-fb-cute/imager_3_45424_700.jpg';
+    final String src3 =
+        'https://jako.edu.vn/anh-dai-dien-fb-cute/imager_1_45424_700.jpg';
+    final String src2 =
+        'https://jako.edu.vn/anh-dai-dien-fb-cute/imager_2_45424_700.jpg';
+    final String src1 =
+        'https://jako.edu.vn/anh-dai-dien-fb-cute/imager_3_45424_700.jpg';
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color(0xffF5F5F5),
@@ -52,7 +54,10 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      icon: const Icon(Icons.arrow_back_ios, color: Colors.white,)),
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                      )),
                   const SizedBox(width: 10),
                   const Text(
                     'Bảng xếp hạng',
@@ -146,7 +151,7 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
                             ),
                             const Spacer(),
                             Image.asset(
-                             'assets/award3.png',
+                              'assets/award3.png',
                               width: 40,
                             ),
                             Text(

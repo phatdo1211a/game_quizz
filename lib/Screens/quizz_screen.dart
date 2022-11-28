@@ -6,6 +6,11 @@ import 'package:game_quizz/const/image.dart';
 import 'package:game_quizz/const/text_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:game_quizz/screens/home.dart';
+import 'package:game_quizz/screens/nextpage.dart';
+
+import '../play/components/custome_alert.dart';
+import '../play/components/helping_icons_row.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({Key? key}) : super(key: key);
@@ -15,9 +20,11 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
+  bool is5050Used = false;
+  bool isSwitchUsed = false;
   var currentQuestionIndex = 0;
-  int seconds = 5;
-  int maxsecond = 5;
+  int seconds = 10;
+  int maxsecond = 10;
   Timer? timer;
   late Future quiz;
 
@@ -75,7 +82,7 @@ class _QuizScreenState extends State<QuizScreen> {
     currentQuestionIndex++;
     resetColors();
     timer!.cancel();
-    seconds = 5;
+    seconds = 11;
     startTimer();
   }
 
@@ -84,158 +91,216 @@ class _QuizScreenState extends State<QuizScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       body: SafeArea(
-          child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        padding: const EdgeInsets.all(12),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [blue, darkBlue],
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          padding: const EdgeInsets.all(12),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [blue, darkBlue],
+            ),
           ),
-        ),
-        child: FutureBuilder(
-          future: quiz,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData) {
-              var data = snapshot.data["results"];
+          child: FutureBuilder(
+            future: quiz,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                var data = snapshot.data["results"];
+                if (isLoaded == false) {
+                  optionsList = data[currentQuestionIndex]["incorrect_answers"];
+                  optionsList.add(data[currentQuestionIndex]["correct_answer"]);
+                  optionsList.shuffle();
+                  isLoaded = true;
+                }
 
-              if (isLoaded == false) {
-                optionsList = data[currentQuestionIndex]["incorrect_answers"];
-                optionsList.add(data[currentQuestionIndex]["correct_answer"]);
-                optionsList.shuffle();
-                isLoaded = true;
-              }
-
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            border: Border.all(color: lightgrey, width: 2),
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              border: Border.all(color: lightgrey, width: 2),
+                            ),
+                            child: IconButton(
+                                onPressed: () {
+                                  customAlert(
+                                    context: context,
+                                    title: "Huỷ trò chơi",
+                                    desc:
+                                        "Bạn chỉ có $points tym. Hãy thử lại nhé!",
+                                    text: "Thoát",
+                                    onPressed: () {
+                                      setState(() {
+                                        points = 0;
+                                        is5050Used = false;
+                                        isSwitchUsed = false;
+                                      });
+                                      nextpage(context, HomeScreen());
+                                    },
+                                  ).show();
+                                },
+                                icon: const Icon(
+                                  CupertinoIcons.xmark,
+                                  color: Colors.white,
+                                  size: 28,
+                                )),
                           ),
-                          child: IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(
-                                CupertinoIcons.xmark,
-                                color: Colors.white,
-                                size: 28,
-                              )),
-                        ),
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            normalText(
-                                color: Colors.white,
-                                size: 20,
-                                text: "$seconds"),
-                            SizedBox(
-                              width: 40,
-                              height: 40,
-                              child: CircularProgressIndicator(
-                                value: seconds / maxsecond,
-                                valueColor:
-                                    const AlwaysStoppedAnimation(Colors.white),
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              normalText(
+                                  color: Colors.white,
+                                  size: 20,
+                                  text: "$seconds"),
+                              SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: CircularProgressIndicator(
+                                  value: seconds / maxsecond,
+                                  valueColor: const AlwaysStoppedAnimation(
+                                      Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            child: TextButton.icon(
+                                onPressed: null,
+                                icon: const Icon(CupertinoIcons.heart_fill,
+                                    color: Colors.red, size: 18),
+                                label: normalText(
+                                    color: Colors.white,
+                                    size: 14,
+                                    text: points.toString())),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Image.asset(
+                        ideas,
+                        width: 150,
+                      ),
+                      const SizedBox(height: 20),
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: normalText(
+                              color: lightgrey,
+                              size: 18,
+                              text:
+                                  "Question ${currentQuestionIndex + 1} of ${data.length}")),
+                      const SizedBox(height: 20),
+                      normalText(
+                          color: Colors.white,
+                          size: 20,
+                          text: data[currentQuestionIndex]["question"]),
+                      const SizedBox(height: 20),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: optionsList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          var answer =
+                              data[currentQuestionIndex]["correct_answer"];
+
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (answer.toString() ==
+                                    optionsList[index].toString()) {
+                                  optionsColor[index] = Colors.green;
+                                  points = points + 10;
+                                } else {
+                                  optionsColor[index] = Colors.red;
+                                }
+                                if (currentQuestionIndex < data.length - 1) {
+                                  Future.delayed(const Duration(seconds: 1),
+                                      () {
+                                    gotoNextQuestion();
+                                  });
+                                } else {
+                                  timer!.cancel();
+                                  //here you can do whatever you want with the results
+                                }
+                              });
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 20),
+                              alignment: Alignment.center,
+                              width: size.width - 100,
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: optionsColor[index],
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: headingText(
+                                color: blue,
+                                size: 18,
+                                text: optionsList[index].toString(),
                               ),
                             ),
-                          ],
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: lightgrey, width: 2),
-                          ),
-                          child: TextButton.icon(
-                              onPressed: null,
-                              icon: const Icon(CupertinoIcons.heart_fill,
-                                  color: Colors.white, size: 18),
-                              label: normalText(
-                                  color: Colors.white, size: 14, text: "Like")),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Image.asset(ideas, width: 200),
-                    const SizedBox(height: 20),
-                    Align(
-                        alignment: Alignment.centerLeft,
-                        child: normalText(
-                            color: lightgrey,
-                            size: 18,
-                            text:
-                                "Question ${currentQuestionIndex + 1} of ${data.length}")),
-                    const SizedBox(height: 20),
-                    normalText(
-                        color: Colors.white,
-                        size: 20,
-                        text: data[currentQuestionIndex]["question"]),
-                    const SizedBox(height: 20),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: optionsList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        var answer =
-                            data[currentQuestionIndex]["correct_answer"];
-
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (answer.toString() ==
-                                  optionsList[index].toString()) {
-                                optionsColor[index] = Colors.green;
-                                points = points + 10;
-                              } else {
-                                optionsColor[index] = Colors.red;
-                              }
-
-                              if (currentQuestionIndex < data.length - 1) {
-                                Future.delayed(const Duration(seconds: 1), () {
-                                  gotoNextQuestion();
-                                });
-                              } else {
-                                timer!.cancel();
-                                //here you can do whatever you want with the results
-                              }
-                            });
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.only(bottom: 20),
-                            alignment: Alignment.center,
-                            width: size.width - 100,
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: optionsColor[index],
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: headingText(
-                              color: blue,
-                              size: 18,
-                              text: optionsList[index].toString(),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(Colors.white),
-                ),
-              );
-            }
-          },
+                          );
+                        },
+                      ),
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              helpingIconsRow(
+                                is5050UsedValue: is5050Used,
+                                isSwitchUsedValue: isSwitchUsed,
+                                functionOF5050: () {
+                                  setState(() {
+                                    if (is5050Used == false) {
+                                      int myCount = 0;
+                                      for (int i = 0; i <= 3; i++) {
+                                        if (data[currentQuestionIndex]
+                                                    ["incorrect_answers"][i] !=
+                                                data[currentQuestionIndex]
+                                                    ["correct_answer"] &&
+                                            myCount <= 1) {
+                                          data[currentQuestionIndex]
+                                              ["incorrect_answers"][i] = ' ';
+                                          myCount++;
+                                        }
+                                      }
+                                      is5050Used = true;
+                                    }
+                                  });
+                                },
+                                switchFunction: () {
+                                  setState(() {
+                                    if (isSwitchUsed == false) {
+                                      data[currentQuestionIndex]["question"] +=
+                                          data[currentQuestionIndex]
+                                              ["question"];
+                                      isSwitchUsed = true;
+                                    }
+                                  });
+                                },
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation(Colors.white),
+                  ),
+                );
+              }
+            },
+          ),
         ),
-      )),
+      ),
     );
   }
 }

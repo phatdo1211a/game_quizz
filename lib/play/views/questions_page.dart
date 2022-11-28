@@ -70,23 +70,23 @@ class _QuestionsPageState extends State<QuestionsPage> {
               helpingIconsRow(
                 is5050UsedValue: is5050Used,
                 isSwitchUsedValue: isSwitchUsed,
-                withdrawFunction: () {
-                  customAlert(
-                    context: context,
-                    title: "Huỷ trò chơi",
-                    desc: "Bạn chỉ có $currentBalance Xu. Hãy thử lại nhé!",
-                    text: "Thoát",
-                    onPressed: () {
-                      setState(() {
-                        reSetGameData();
-                      });
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomeScreen()));
-                    },
-                  ).show();
-                },
+                // withdrawFunction: () {
+                //   customAlert(
+                //     context: context,
+                //     title: "Huỷ trò chơi",
+                //     desc: "Bạn chỉ có $currentBalance Xu. Hãy thử lại nhé!",
+                //     text: "Thoát",
+                //     onPressed: () {
+                //       setState(() {
+                  //      reSetGameData();
+                //       });
+                //       Navigator.push(
+                //           context,
+                //           MaterialPageRoute(
+                //               builder: (context) => HomeScreen()));
+                //     },
+                //   ).show();
+                // },
                 functionOF5050: () {
                   setState(() {
                     if (is5050Used == false) {
