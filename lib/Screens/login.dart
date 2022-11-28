@@ -86,7 +86,7 @@ class _LoginAppState extends State<LoginApp> {
                           GestureDetector(
                             onTap:inTongleShowPass,
                             child: Text(
-                              _showPass?"HIDE":"SHOW",
+                              _showPass?"ẨN":"HIỆN",
                               style: TextStyle(
                                   color: Colors.blue,
                                   fontSize: 13,
