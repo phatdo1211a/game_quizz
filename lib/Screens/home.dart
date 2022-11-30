@@ -7,6 +7,7 @@ import 'package:game_quizz/play/views/questions_page.dart';
 import 'package:game_quizz/provider/google_sign_in.dart';
 import 'package:game_quizz/screens/leaderboard_screen.dart';
 import 'package:game_quizz/screens/nextpage.dart';
+import 'package:game_quizz/screens/profile_screen.dart';
 import 'package:game_quizz/screens/quizz_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -20,13 +21,16 @@ class Item {
 }
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  String email;
+  HomeScreen({Key? key, required this.email}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState(email: email);
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+    String email;
+  _HomeScreenState({Key? key, required this.email});
   int _currentIndex = 0;
 
   List<Item> listItem = [
@@ -86,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 title: const Text('Trang cá nhân'),
                 onTap: () {
-                  Navigator.pop(context);
+                  nextpage(context, Profile(email: email));
                 },
               ),
               ListTile(
@@ -190,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => QuizScreen(),
+                    builder: (context) => QuizScreen(email: email),
                   ),
                 );
               }

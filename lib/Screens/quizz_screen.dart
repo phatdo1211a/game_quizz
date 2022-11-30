@@ -13,15 +13,19 @@ import '../play/components/custome_alert.dart';
 import '../play/components/helping_icons_row.dart';
 
 class QuizScreen extends StatefulWidget {
-  const QuizScreen({Key? key}) : super(key: key);
+    String email;
+  QuizScreen({Key? key, required this.email}) : super(key: key);
 
   @override
-  State<QuizScreen> createState() => _QuizScreenState();
+  State<QuizScreen> createState() => _QuizScreenState(email: email);
 }
 
 class _QuizScreenState extends State<QuizScreen> {
+    String email;
+  _QuizScreenState({Key? key, required this.email});
   bool is5050Used = false;
   bool isSwitchUsed = false;
+  int heart=100;
   var currentQuestionIndex = 0;
   int seconds = 10;
   int maxsecond = 10;
@@ -113,7 +117,6 @@ class _QuizScreenState extends State<QuizScreen> {
                   optionsList.shuffle();
                   isLoaded = true;
                 }
-
                 return SingleChildScrollView(
                   child: Column(
                     children: [
@@ -129,7 +132,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                 onPressed: () {
                                   customAlert(
                                     context: context,
-                                    title: "Huỷ trò chơi",
+                                    title: "Thoát trò chơi",
                                     desc:
                                         "Bạn chỉ có $points tym. Hãy thử lại nhé!",
                                     text: "Thoát",
@@ -139,7 +142,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                         is5050Used = false;
                                         isSwitchUsed = false;
                                       });
-                                      nextpage(context, HomeScreen());
+                                      nextpage(context, HomeScreen(email: email,));
                                     },
                                   ).show();
                                 },
@@ -149,44 +152,52 @@ class _QuizScreenState extends State<QuizScreen> {
                                   size: 28,
                                 )),
                           ),
-                          Stack(
-                            alignment: Alignment.center,
+                          Row(
+                            //mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              normalText(
-                                  color: Colors.white,
-                                  size: 20,
-                                  text: "$seconds"),
-                              SizedBox(
-                                width: 40,
-                                height: 40,
-                                child: CircularProgressIndicator(
-                                  value: seconds / maxsecond,
-                                  valueColor: const AlwaysStoppedAnimation(
-                                      Colors.white),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            child: TextButton.icon(
+                              TextButton.icon(
                                 onPressed: null,
                                 icon: const Icon(CupertinoIcons.heart_fill,
                                     color: Colors.red, size: 18),
                                 label: normalText(
-                                    color: Colors.white,
-                                    size: 14,
-                                    text: points.toString())),
+                                  color: Colors.white,
+                                  text: "$heart",
+                                ),
+                              ),
+                              TextButton.icon(
+                                  onPressed: null,
+                                  icon: const Icon(
+                                      CupertinoIcons.money_dollar_circle,
+                                      color: Color.fromARGB(255, 228, 207, 16),
+                                      size: 18),
+                                  label: normalText(
+                                      color: Colors.white,
+                                      text: points.toString())),
+                            ],
                           ),
                         ],
                       ),
                       const SizedBox(height: 20),
-                      Image.asset(
-                        ideas,
-                        width: 150,
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          normalText(
+                              color: Colors.white, size: 20, text: "$seconds"),
+                          SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: CircularProgressIndicator(
+                              value: seconds / maxsecond,
+                              valueColor:
+                                  const AlwaysStoppedAnimation(Colors.white),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 20),
                       Align(
-                          alignment: Alignment.centerLeft,
+                          alignment: AlignmentDirectional.centerStart,
                           child: normalText(
                               color: lightgrey,
                               size: 18,
@@ -204,7 +215,6 @@ class _QuizScreenState extends State<QuizScreen> {
                         itemBuilder: (BuildContext context, int index) {
                           var answer =
                               data[currentQuestionIndex]["correct_answer"];
-
                           return GestureDetector(
                             onTap: () {
                               setState(() {
@@ -214,6 +224,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                   points = points + 10;
                                 } else {
                                   optionsColor[index] = Colors.red;
+                                  heart=heart-1;
                                 }
                                 if (currentQuestionIndex < data.length - 1) {
                                   Future.delayed(const Duration(seconds: 1),
@@ -259,7 +270,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                       int myCount = 0;
                                       for (int i = 0; i <= 3; i++) {
                                         if (data[currentQuestionIndex]
-                                                    ["incorrect_answers"][i] !=
+                                                    ["question"][i] !=
                                                 data[currentQuestionIndex]
                                                     ["correct_answer"] &&
                                             myCount <= 1) {

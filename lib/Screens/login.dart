@@ -84,9 +84,9 @@ class _LoginAppState extends State<LoginApp> {
                             ),
                           ),
                           GestureDetector(
-                            onTap:inTongleShowPass,
+                            onTap: inTongleShowPass,
                             child: Text(
-                              _showPass?"ẨN":"HIỆN",
+                              _showPass ? "ẨN" : "HIỆN",
                               style: TextStyle(
                                   color: Colors.blue,
                                   fontSize: 13,
@@ -98,7 +98,7 @@ class _LoginAppState extends State<LoginApp> {
                     ),
 
                     Padding(
-                      padding:EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
                       child: ElevatedButton(
                         onPressed: () async {
                           try {
@@ -108,12 +108,10 @@ class _LoginAppState extends State<LoginApp> {
                                     password: _txtPass.text);
                             _firebaseAuth.authStateChanges().listen((event) {
                               if (event != null) {
-                                _txtEmail.clear();
-                                _txtPass.clear();
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => HomeScreen()));
+                                        builder: (context) => HomeScreen(email: _txtEmail.text,)));
                               } else {
                                 final snackBar = SnackBar(
                                     content: Text(
@@ -126,9 +124,15 @@ class _LoginAppState extends State<LoginApp> {
                                 SnackBar(content: Text('Đăng nhập thành công'));
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
+                          } on FirebaseAuthException catch (e) {
+                            if (e.code == 'user-not-found') {
+                              print('No user found for that email.');
+                            } else if (e.code == 'wrong-password') {
+                              print('Wrong password provided for that user.');
+                            }
                           } catch (e) {
                             final snackBar = SnackBar(
-                                content: Text('Lỗi kết nối đến Server '));
+                                content: Text('Lỗi kết nối đến server'));
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
                           }
@@ -148,9 +152,21 @@ class _LoginAppState extends State<LoginApp> {
                     Padding(
                       padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
                       child: Row(children: <Widget>[
-                        Expanded(child: Divider(color: Colors.blue, thickness: 1,)),
-                        Text("Hoặc", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),),
-                        Expanded(child: Divider(color: Colors.blue, thickness: 1,)),
+                        Expanded(
+                            child: Divider(
+                          color: Colors.blue,
+                          thickness: 1,
+                        )),
+                        Text(
+                          "Hoặc",
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.bold),
+                        ),
+                        Expanded(
+                            child: Divider(
+                          color: Colors.blue,
+                          thickness: 1,
+                        )),
                       ]),
                     ),
 
@@ -163,12 +179,16 @@ class _LoginAppState extends State<LoginApp> {
                           padding: edgeInsets,
                           text: "Đăng nhập bằng google",
                           onPressed: () {
+                            var user = FirebaseAuth.instance.currentUser!;
                             final provider = Provider.of<GoogleSignInProvider>(
                                 context,
                                 listen: false);
-                            provider.googleLogin(context);
+                            provider.googleLogin(context).then((value) {
+                               nextpage(context, HomeScreen(email: user.email!));
+                            },);
+                                  
+                         
                           },
-                          
                         ),
                       ),
                     ),
@@ -186,29 +206,36 @@ class _LoginAppState extends State<LoginApp> {
     );
   }
 
+  @override
+  void dispose() {
+    _txtEmail.dispose();
+    _txtPass.dispose();
+    super.dispose();
+  }
+
   void inTongleShowPass() {
     setState(() {
       _showPass = !_showPass;
     });
   }
 
-  _stream(context) {
-    return StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasData) {
-            return HomeScreen();
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Something Went Wrong'),
-            );
-          } else {
-            return Register();
-          }
-        });
-  }
+  // _stream(context) {
+  //   return StreamBuilder(
+  //       stream: FirebaseAuth.instance.authStateChanges(),
+  //       builder: (context, snapshot) {
+  //         if (snapshot.connectionState == ConnectionState.waiting) {
+  //           return CircularProgressIndicator();
+  //         } else if (snapshot.hasData) {
+  //           return HomeScreen();
+  //         } else if (snapshot.hasError) {
+  //           return Center(
+  //             child: Text('Something Went Wrong'),
+  //           );
+  //         } else {
+  //           return Register();
+  //         }
+  //       });
+  // }
 
   _signup(context) {
     return Row(

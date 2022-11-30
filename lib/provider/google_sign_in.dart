@@ -23,14 +23,12 @@ class GoogleSignInProvider extends ChangeNotifier {
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(),
-          ),
-        );
         await FirebaseAuth.instance.signInWithCredential(credential);
-
+         FirebaseFirestore.instance.collection("users").add({
+        'email':googleUser.email,
+        'phone': '0839887334',
+        'name': googleUser.displayName,
+    });
         print("sign in success");
       } catch (e) {
         print("failed login!");
@@ -40,7 +38,8 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
 
   Future googleLogout(context) async {
-    await googleSignIn.signOut();
-    FirebaseAuth.instance.signOut();
+     await googleSignIn.signOut();
+    await FirebaseAuth.instance.signOut();
+    notifyListeners();
   }
 }
