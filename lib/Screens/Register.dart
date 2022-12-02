@@ -127,7 +127,6 @@ class _RegisterState extends State<Register> {
                                 email: _txtEmail.text, password: _txtPass.text)
                             .then((value) => users.add({
                                   'email':_txtEmail.text,
-                                  'pass':_txtPass.text, 
                                   'name': _txtName.text,
                                   'phone': _txtPhone.text,
                                 }))

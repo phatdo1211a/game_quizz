@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:game_quizz/object/profile_object.dart';
 import 'package:game_quizz/play/views/questions_page.dart';
 import 'package:game_quizz/provider/google_sign_in.dart';
 import 'package:game_quizz/screens/leaderboard_screen.dart';
@@ -11,6 +12,7 @@ import 'package:game_quizz/screens/profile_screen.dart';
 import 'package:game_quizz/screens/quizz_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../provider/profie_provider.dart';
 import 'login.dart';
 
 class Item {
@@ -29,7 +31,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-    String email;
+  String email;
   _HomeScreenState({Key? key, required this.email});
   int _currentIndex = 0;
 
@@ -79,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.zero,
             children: [
               DrawerHeader(
-                child:  HeaderBuild(context), //Text('chưa có dữ liệu'),
+                child: HeaderBuild(context), 
                 decoration: BoxDecoration(
                   color: Color.fromARGB(255, 28, 100, 0),
                 ),
@@ -161,24 +163,40 @@ class _HomeScreenState extends State<HomeScreen> {
       _currentIndex = index;
     });
   }
-
   Widget HeaderBuild(BuildContext context) {
     var user = FirebaseAuth.instance.currentUser;
-    return user != null? UserAccountsDrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 28, 100, 0),
-                  ),
-                  accountName: Text('User'),
-                  accountEmail: Text(user.email!),
-                  currentAccountPicture: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_960_720.png', scale: 20),//')//user.photoURL!), //
-                    backgroundColor: Color.fromARGB(255, 28, 100, 0),
-                  ),
-                )
-        : Center(
-            child: CircularProgressIndicator(),
-          );
+    return FutureBuilder<List<ProfileObject>>(
+        future: ProfileProvider.getUsers(email),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<ProfileObject> thongTin = snapshot.data!;
+            return Scaffold(
+              body: user != null
+                  ? UserAccountsDrawerHeader(
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 28, 100, 0),
+                      ),
+                      accountName: user.displayName == null
+                          ? Text(thongTin[0].name)
+                          : Text(user.displayName!),
+                      accountEmail: Text(user.email!),
+                      currentAccountPicture: CircleAvatar(
+                        radius: 50,
+                        backgroundImage: user.photoURL == null
+                            ? NetworkImage(
+                                'https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_960_720.png',
+                                scale: 20)
+                            : NetworkImage(user.photoURL!),
+                        backgroundColor: Color.fromARGB(255, 28, 100, 0),
+                      ),
+                    )
+                  : Center(
+                      child: CircularProgressIndicator(),
+                    ),
+            );
+          }
+          return Text('');
+        });
   }
 
   Widget cardItem(int i) {

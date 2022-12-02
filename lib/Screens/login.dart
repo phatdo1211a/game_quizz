@@ -7,6 +7,7 @@ import 'package:game_quizz/screens/widgets.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:game_quizz/provider/google_sign_in.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'register.dart';
 
@@ -109,30 +110,23 @@ class _LoginAppState extends State<LoginApp> {
                             _firebaseAuth.authStateChanges().listen((event) {
                               if (event != null) {
                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomeScreen(email: _txtEmail.text,)));
-                              } else {
-                                final snackBar = SnackBar(
-                                    content: Text(
-                                        'Email hoặc mật khẩu không đúng!'));
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HomeScreen(
+                                      email: _txtEmail.text,
+                                    ),
+                                  ),
+                                );
                               }
                             });
                             final snackBar =
                                 SnackBar(content: Text('Đăng nhập thành công'));
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
-                          } on FirebaseAuthException catch (e) {
-                            if (e.code == 'user-not-found') {
-                              print('No user found for that email.');
-                            } else if (e.code == 'wrong-password') {
-                              print('Wrong password provided for that user.');
-                            }
                           } catch (e) {
                             final snackBar = SnackBar(
-                                content: Text('Lỗi kết nối đến server'));
+                                content:
+                                    Text('Email hoặc mật khẩu không đúng'));
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
                           }
@@ -178,16 +172,19 @@ class _LoginAppState extends State<LoginApp> {
                           shape: StadiumBorder(),
                           padding: edgeInsets,
                           text: "Đăng nhập bằng google",
-                          onPressed: () {
-                            var user = FirebaseAuth.instance.currentUser!;
+                          onPressed: () async {
                             final provider = Provider.of<GoogleSignInProvider>(
                                 context,
                                 listen: false);
-                            provider.googleLogin(context).then((value) {
-                               nextpage(context, HomeScreen(email: user.email!));
-                            },);
-                                  
-                         
+                            provider.googleLogin(context).then(
+                              (value) {
+                                nextpage(
+                                    context,
+                                    HomeScreen(
+                                        email:
+                                            _firebaseAuth.currentUser!.email!));
+                              },
+                            );
                           },
                         ),
                       ),
