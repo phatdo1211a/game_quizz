@@ -22,6 +22,19 @@ class _LoginAppState extends State<LoginApp> {
   TextEditingController _txtEmail = TextEditingController();
   TextEditingController _txtPass = TextEditingController();
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  var docID;
+  var querySnapshots;
+    CollectionReference user = FirebaseFirestore.instance.collection("users");
+    Future<void> updateUser(var docID) {
+    return user
+        .doc(docID)
+        .update({
+          'email': _txtEmail.text,
+        })
+        .then((value) => Navigator.pop(context, 'Cập nhật thành công'))
+        .catchError(
+            (error) => Navigator.pop(context, 'Cập nhật thất bại $error'));
+  }
   late bool _showPass = false;
 
   @override

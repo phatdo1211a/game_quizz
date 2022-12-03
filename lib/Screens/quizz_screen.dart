@@ -29,10 +29,10 @@ class _QuizScreenState extends State<QuizScreen> {
   var currentQuestionIndex = 0;
   int seconds = 10;
   int maxsecond = 10;
+  int points=0;
   Timer? timer;
   late Future quiz;
 
-  int points = 0;
 
   var isLoaded = false;
 
