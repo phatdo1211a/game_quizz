@@ -13,7 +13,7 @@ import '../play/components/custome_alert.dart';
 import '../play/components/helping_icons_row.dart';
 
 class QuizScreen extends StatefulWidget {
-    String email;
+  String email;
   QuizScreen({Key? key, required this.email}) : super(key: key);
 
   @override
@@ -21,11 +21,11 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-    String email;
+  String email;
   _QuizScreenState({Key? key, required this.email});
   bool is5050Used = false;
   bool isSwitchUsed = false;
-  int heart=100;
+  int heart = 25;
   var currentQuestionIndex = 0;
   int seconds = 10;
   int maxsecond = 10;
@@ -39,6 +39,7 @@ class _QuizScreenState extends State<QuizScreen> {
   var optionsList = [];
 
   var optionsColor = [
+    Colors.white,
     Colors.white,
     Colors.white,
     Colors.white,
@@ -66,7 +67,18 @@ class _QuizScreenState extends State<QuizScreen> {
       Colors.white,
       Colors.white,
       Colors.white,
+      Colors.white,
     ];
+  }
+
+  void resetGame() {
+    isLoaded = true;
+    currentQuestionIndex = 0;
+    resetColors();
+    timer!.cancel();
+    seconds = 11;
+    startTimer();
+    points = 0;
   }
 
   startTimer() {
@@ -75,6 +87,24 @@ class _QuizScreenState extends State<QuizScreen> {
         if (seconds > 0) {
           seconds--;
         } else {
+          heart--;
+          if (heart == 0) {
+            customAlert(
+                    context: context,
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomeScreen(
+                                    email: email,
+                                  )));
+                    },
+                    title: 'Ồ đã hết lượt chơi rồi!',
+                    desc: "Bạn hãy xem quảng cáo để có thêm 1 lượt chơi nhé!!",
+                    text: 'Đồng ý')
+                .show();
+            timer.cancel();
+          }
           gotoNextQuestion();
         }
       });
@@ -88,6 +118,8 @@ class _QuizScreenState extends State<QuizScreen> {
     timer!.cancel();
     seconds = 11;
     startTimer();
+    is5050Used = false;
+    isSwitchUsed = false;
   }
 
   @override
@@ -114,7 +146,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 if (isLoaded == false) {
                   optionsList = data[currentQuestionIndex]["incorrect_answers"];
                   optionsList.add(data[currentQuestionIndex]["correct_answer"]);
-                  optionsList.shuffle();
+                  //optionsList.shuffle();
                   isLoaded = true;
                 }
                 return SingleChildScrollView(
@@ -126,30 +158,31 @@ class _QuizScreenState extends State<QuizScreen> {
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
-                              border: Border.all(color: lightgrey, width: 2),
                             ),
                             child: IconButton(
                                 onPressed: () {
                                   customAlert(
                                     context: context,
-                                    title: "Thoát trò chơi",
+                                    title: "Kết thúc trò chơi",
                                     desc:
-                                        "Bạn chỉ có $points tym. Hãy thử lại nhé!",
+                                        "Chúc mừng bạn đã hoàn thành và có $points điểm.!",
                                     text: "Thoát",
                                     onPressed: () {
                                       setState(() {
-                                        points = 0;
-                                        is5050Used = false;
-                                        isSwitchUsed = false;
+                                        resetGame();
                                       });
-                                      nextpage(context, HomeScreen(email: email,));
+                                      nextpage(
+                                          context,
+                                          HomeScreen(
+                                            email: email,
+                                          ));
                                     },
                                   ).show();
                                 },
                                 icon: const Icon(
                                   CupertinoIcons.xmark,
                                   color: Colors.white,
-                                  size: 28,
+                                  size: 18,
                                 )),
                           ),
                           Row(
@@ -224,7 +257,31 @@ class _QuizScreenState extends State<QuizScreen> {
                                   points = points + 10;
                                 } else {
                                   optionsColor[index] = Colors.red;
-                                  heart=heart-1;
+                                  heart = heart - 1;
+                                  if (answer.toString() !=
+                                          optionsList[index].toString() &&
+                                      heart == 0) {
+                                    timer?.cancel();
+                                    customAlert(
+                                            context: context,
+                                            onPressed: () {
+                                              setState(() {
+                                                resetGame();
+                                              });
+                                              Navigator.pop(
+                                                  context,
+                                                  QuizScreen(
+                                                    email: email,
+                                                  ));
+                                              heart++;
+                                            },
+                                            title:
+                                                'Ồ đã hết lượt chơi rồi. Hãy thử lại nào!',
+                                            desc:
+                                                "Bạn hãy xem quảng cáo để có thêm 1 lượt chơi nhé!!",
+                                            text: 'Đồng ý')
+                                        .show();
+                                  }
                                 }
                                 if (currentQuestionIndex < data.length - 1) {
                                   Future.delayed(const Duration(seconds: 1),
@@ -233,7 +290,25 @@ class _QuizScreenState extends State<QuizScreen> {
                                   });
                                 } else {
                                   timer!.cancel();
-                                  //here you can do whatever you want with the results
+                                  if (answer.toString() !=
+                                          optionsList[index].toString() &&
+                                      data[currentQuestionIndex]["question"] >
+                                          20) {
+                                    customAlert(
+                                            context: context,
+                                            onPressed: () {
+                                              setState(() {
+                                                resetGame();
+                                              });
+                                              nextpage(context,
+                                                  HomeScreen(email: email));
+                                            },
+                                            title: 'Bạn đã hoàn thành ',
+                                            desc:
+                                                "Chúc mừng bạn đã có $points vàng. Hãy thử lại nào.",
+                                            text: 'Đồng ý')
+                                        .show();
+                                  }
                                 }
                               });
                             },

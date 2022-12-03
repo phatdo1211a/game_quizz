@@ -35,7 +35,7 @@ class GoogleSignInProvider extends ChangeNotifier {
               .doc(firebaseUser?.uid);
           return await documentReference.update({
             'email': googleUser.email,
-            'phone': '0385938943',
+            'phone': '0385938943', 
             'name': googleUser.displayName
           });
         } else {
