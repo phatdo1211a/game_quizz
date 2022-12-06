@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:game_quizz/play/components/customStartButton.dart';
+import 'package:game_quizz/play/components/thongbao.dart';
 import 'package:game_quizz/screens/login.dart';
 import 'package:game_quizz/screens/nextpage.dart';
 import 'package:game_quizz/screens/widgets.dart';
@@ -129,15 +130,11 @@ class _RegisterState extends State<Register> {
                                   'phone': _txtPhone.text,
                                 }))
                             .then((value) {
-                          final snackBar =
-                              SnackBar(content: Text('Đăng kí thành công'));
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                         thongbao("Đăng kí thành công");
                           nextpage(context, LoginApp());
                         });
                       } on FirebaseAuthException catch (error) {
-                        Fluttertoast.showToast(
-                            msg: error.message.toString(),
-                            gravity: ToastGravity.BOTTOM);
+                        thongbao(error.message.toString());
                       }
                     },
                     child: Text(

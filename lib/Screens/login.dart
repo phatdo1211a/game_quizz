@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:game_quizz/play/components/thongbao.dart';
 import 'package:game_quizz/screens/home.dart';
 import 'package:game_quizz/screens/nextpage.dart';
 import 'package:game_quizz/screens/widgets.dart';
@@ -22,19 +23,19 @@ class _LoginAppState extends State<LoginApp> {
   TextEditingController _txtEmail = TextEditingController();
   TextEditingController _txtPass = TextEditingController();
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  var docID;
-  var querySnapshots;
-  CollectionReference user = FirebaseFirestore.instance.collection("users");
-  Future<void> updateUser(var docID) {
-    return user
-        .doc(docID)
-        .update({
-          'email': _txtEmail.text,
-        })
-        .then((value) => Navigator.pop(context, 'Cập nhật thành công'))
-        .catchError(
-            (error) => Navigator.pop(context, 'Cập nhật thất bại $error'));
-  }
+  // var docID;
+  // var querySnapshots;
+  // CollectionReference user = FirebaseFirestore.instance.collection("users");
+  // Future<void> updateUser(var docID) {
+  //   return user
+  //       .doc(docID)
+  //       .update({
+  //         'email': _txtEmail.text,
+  //       })
+  //       .then((value) => Navigator.pop(context, 'Cập nhật thành công'))
+  //       .catchError(
+  //           (error) => Navigator.pop(context, 'Cập nhật thất bại $error'));
+  // }
 
   late bool _showPass = false;
 
@@ -114,7 +115,6 @@ class _LoginAppState extends State<LoginApp> {
                       padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
                       child: ElevatedButton(
                         onPressed: () async {
-                          kiemTra();
                           try {
                             final _user =
                                 await _firebaseAuth.signInWithEmailAndPassword(
@@ -122,26 +122,13 @@ class _LoginAppState extends State<LoginApp> {
                                     password: _txtPass.text);
                             _firebaseAuth.authStateChanges().listen((event) {
                               if (event != null) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomeScreen(
-                                      email: _txtEmail.text,
-                                    ),
-                                  ),
-                                );
+                                nextpage(
+                                    context, HomeScreen(email: _txtEmail.text));
                               }
                             });
-                            final snackBar =
-                                SnackBar(content: Text('Đăng nhập thành công'));
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                          } catch (e) {
-                            final snackBar = SnackBar(
-                                content:
-                                    Text('Email hoặc mật khẩu không đúng'));
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
+                            thongbao("Đăng nhập thành công");
+                          } on FirebaseAuthException catch (e) {
+                            thongbao(e.message.toString());
                           }
                         },
                         child: Text(
@@ -229,20 +216,6 @@ class _LoginAppState extends State<LoginApp> {
     });
   }
 
-  void kiemTra() {
-    final txtEmail = _txtEmail.value.text;
-    final txtPass = _txtPass.value.text;
-    if (txtEmail.isEmpty || txtPass.isEmpty) {
-      final snackBar = SnackBar(
-          content: Text('Tài khoản hoặc mật khẩu không được để khống'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
-    if (!RegExp(r'.+\@.+\..+').hasMatch(txtEmail)) {
-      final snackBar = SnackBar(content: Text('Email không hợp lệ'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
-  }
-
   _signup(context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -253,12 +226,7 @@ class _LoginAppState extends State<LoginApp> {
         ),
         TextButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Register(),
-                ),
-              );
+             nextpage(context, Register());
             },
             child: Text(
               "Đăng kí",

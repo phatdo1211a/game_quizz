@@ -88,6 +88,7 @@ class _QuizScreenState extends State<QuizScreen> {
         if (seconds > 0) {
           seconds--;
         } else {
+           timer.cancel();
           if (heart == 0) {
             setState(() {
               timer.cancel();
@@ -101,7 +102,6 @@ class _QuizScreenState extends State<QuizScreen> {
                     desc: "Bạn có $points vàng",
                     text: 'Đồng ý')
                 .show();
-            timer.cancel();
           }
           heart--;
           gotoNextQuestion();
@@ -249,14 +249,14 @@ class _QuizScreenState extends State<QuizScreen> {
                               data[currentQuestionIndex]["correct_answer"];
                           return GestureDetector(
                             onTap: () {
-                              setState(() {
+                              setState(() async {
                                 if (answer.toString() ==
                                     optionsList[index].toString()) {
                                   optionsColor[index] = Colors.green;
-                                  points = points + 10;
+                                  points += 10;
                                 } else {
                                   optionsColor[index] = Colors.red;
-                                  heart = heart - 1;
+                                  heart-=1;
                                   if (heart == 0) {
                                     setState(() {
                                       timer?.cancel();
@@ -276,7 +276,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                   }
                                 }
                                 if (currentQuestionIndex < data.length - 1) {
-                                  Future.delayed(const Duration(seconds: 1),
+                                  await Future.delayed(const Duration(seconds: 1),
                                       () {
                                     gotoNextQuestion();
                                   });

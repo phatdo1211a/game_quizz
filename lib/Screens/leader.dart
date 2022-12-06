@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:game_quizz/screens/leaderboard_screen.dart';
+import 'package:game_quizz/screens/nextpage.dart';
 
 class Leader extends StatelessWidget {
   const Leader({Key? key}) : super(key: key);
@@ -8,12 +9,7 @@ class Leader extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LeaderboardScreen(),
-          ),
-        );
+        nextpage(context, LeaderboardScreen);
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -34,7 +30,7 @@ class Leader extends StatelessWidget {
                     left: 40,
                     child: CircleAvatar(
                       backgroundImage: NetworkImage(
-                          'https://john-mohamed.com/wp-content/uploads/2018/05/Profile_avatar_placeholder_large.png'),
+                          'https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/114290880/original/4f68e1da26a2753e500f527f986f65f47dd1fd26/draw-bighead-cartoon-caricature-in-48-hours.png'),
                       radius: 25,
                     ),
                   ),
@@ -42,13 +38,13 @@ class Leader extends StatelessWidget {
                     left: 20,
                     child: CircleAvatar(
                       backgroundImage: NetworkImage(
-                          'https://as1.ftcdn.net/v2/jpg/02/88/79/62/1000_F_288796275_NAlmJ0IESWj9EpsuVcSRnOAA79wPCQPQ.jpg'),
+                          'https://vi.seaicons.com/wp-content/uploads/2017/03/blue-user-icon.png'),
                       radius: 25,
                     ),
                   ),
                   CircleAvatar(
                     backgroundImage: NetworkImage(
-                        'https://images.fineartamerica.com/images-medium-5/lost-astronaut-roberta-ferreira.jpg'),
+                        'https://hocviendigital.com/wp-content/uploads/2017/01/Model-RACE-Icon-1.png'),
                     radius: 25,
                   ),
                 ],

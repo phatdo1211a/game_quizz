@@ -209,12 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return GestureDetector(
             onTap: () {
               if (index == 0) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => QuizScreen(email: email),
-                  ),
-                );
+              nextpage(context,QuizScreen(email: email));
               }
             },
             child: Card(

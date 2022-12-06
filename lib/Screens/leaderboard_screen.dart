@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../play/components/box_leader_board.dart';
 
-class LeaderboardScreen extends ConsumerStatefulWidget {
+class   LeaderboardScreen extends ConsumerStatefulWidget {
   const LeaderboardScreen({Key? key}) : super(key: key);
 
   @override
@@ -29,16 +29,14 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
   }
 
   @override
-  // ignore: prefer_expression_function_bodies
+ 
   Widget build(BuildContext context) {
-    // final leaderboardFuture = ref.watch(futureLeaderboardProvider);
-    // final leaderboard = ref.watch(leaderboardProvider);
     final String src3 =
-        'https://jako.edu.vn/anh-dai-dien-fb-cute/imager_1_45424_700.jpg';
+        'https://khoinguonsangtao.vn/wp-content/uploads/2022/07/avatar-cute-2-560x560.jpg';
     final String src2 =
-        'https://jako.edu.vn/anh-dai-dien-fb-cute/imager_2_45424_700.jpg';
+        'https://khoinguonsangtao.vn/wp-content/uploads/2022/07/avatar-cute-2-560x560.jpg';
     final String src1 =
-        'https://jako.edu.vn/anh-dai-dien-fb-cute/imager_3_45424_700.jpg';
+        'https://khoinguonsangtao.vn/wp-content/uploads/2022/07/avatar-cute-2-560x560.jpg';
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color(0xffF5F5F5),
@@ -67,8 +65,6 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
               ),
             ),
             Expanded(
-              // child: leaderboardFuture.when(
-              //     data: (data) =>
               child: ListView(
                 children: [
                   Container(
@@ -78,21 +74,21 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
                       children: [
                         BoxLeaderBoard(
                           rank: 2,
-                          image: Image.network(src1),
+                          image: Image(image: NetworkImage(src1)),
                           name: 'nguyen van dang khoa',
                           points: 10000,
                           padding: 0,
                         ),
                         BoxLeaderBoard(
                           rank: 1,
-                          image: Image.network(src2),
+                          image: Image(image: NetworkImage(src2)),
                           name: 'nguyen van nho',
                           points: 5000,
                           padding: 60,
                         ),
                         BoxLeaderBoard(
                           rank: 3,
-                          image: Image.network(src3),
+                          image: Image(image: NetworkImage(src3)),
                           name: 'do tan phat',
                           points: 2500,
                           padding: 0,
