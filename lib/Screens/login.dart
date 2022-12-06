@@ -24,8 +24,8 @@ class _LoginAppState extends State<LoginApp> {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   var docID;
   var querySnapshots;
-    CollectionReference user = FirebaseFirestore.instance.collection("users");
-    Future<void> updateUser(var docID) {
+  CollectionReference user = FirebaseFirestore.instance.collection("users");
+  Future<void> updateUser(var docID) {
     return user
         .doc(docID)
         .update({
@@ -35,6 +35,7 @@ class _LoginAppState extends State<LoginApp> {
         .catchError(
             (error) => Navigator.pop(context, 'Cập nhật thất bại $error'));
   }
+
   late bool _showPass = false;
 
   @override
@@ -99,12 +100,10 @@ class _LoginAppState extends State<LoginApp> {
                           ),
                           GestureDetector(
                             onTap: inTongleShowPass,
-                            child: Text(
-                              _showPass ? "ẨN" : "HIỆN",
-                              style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold),
+                            child: Icon(
+                              !_showPass
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                             ),
                           ),
                         ],
@@ -115,6 +114,7 @@ class _LoginAppState extends State<LoginApp> {
                       padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
                       child: ElevatedButton(
                         onPressed: () async {
+                          kiemTra();
                           try {
                             final _user =
                                 await _firebaseAuth.signInWithEmailAndPassword(
@@ -227,6 +227,20 @@ class _LoginAppState extends State<LoginApp> {
     setState(() {
       _showPass = !_showPass;
     });
+  }
+
+  void kiemTra() {
+    final txtEmail = _txtEmail.value.text;
+    final txtPass = _txtPass.value.text;
+    if (txtEmail.isEmpty || txtPass.isEmpty) {
+      final snackBar = SnackBar(
+          content: Text('Tài khoản hoặc mật khẩu không được để khống'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+    if (!RegExp(r'.+\@.+\..+').hasMatch(txtEmail)) {
+      final snackBar = SnackBar(content: Text('Email không hợp lệ'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   _signup(context) {

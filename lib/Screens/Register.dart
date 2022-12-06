@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:game_quizz/play/components/customStartButton.dart';
 import 'package:game_quizz/screens/login.dart';
+import 'package:game_quizz/screens/nextpage.dart';
 import 'package:game_quizz/screens/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -104,12 +106,8 @@ class _RegisterState extends State<Register> {
                     ),
                     GestureDetector(
                       onTap: inTongleShowPass,
-                      child: Text(
-                        _showPass ? "HIDE" : "SHOW",
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold),
+                      child: Icon(
+                        !_showPass ? Icons.visibility : Icons.visibility_off,
                       ),
                     ),
                   ],
@@ -118,15 +116,15 @@ class _RegisterState extends State<Register> {
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
                 child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       try {
                         CollectionReference users =
                             FirebaseFirestore.instance.collection('users');
-                        _firebaseAuth
+                        await _firebaseAuth
                             .createUserWithEmailAndPassword(
                                 email: _txtEmail.text, password: _txtPass.text)
                             .then((value) => users.add({
-                                  'email':_txtEmail.text,
+                                  'email': _txtEmail.text,
                                   'name': _txtName.text,
                                   'phone': _txtPhone.text,
                                 }))
@@ -134,21 +132,12 @@ class _RegisterState extends State<Register> {
                           final snackBar =
                               SnackBar(content: Text('Đăng kí thành công'));
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          Navigator.pop(context, snackBar);
-                        }).catchError((error) {
-                          final snackBar =
-                              SnackBar(content: Text('Tài khoản không hợp lệ'));
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          nextpage(context, LoginApp());
                         });
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == 'weak-password') {
-                          print('The password provided is too weak.');
-                        } else if (e.code == 'email-already-in-use') {
-                          print('The account already exists for that email.');
-                        }
-                      } catch (e) {
-                        final snackBar = SnackBar(content: Text('Error!!'));
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      } on FirebaseAuthException catch (error) {
+                        Fluttertoast.showToast(
+                            msg: error.message.toString(),
+                            gravity: ToastGravity.BOTTOM);
                       }
                     },
                     child: Text(
