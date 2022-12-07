@@ -185,7 +185,6 @@ class _QuizScreenState extends State<QuizScreen> {
                                 )),
                           ),
                           Row(
-                            //mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               TextButton.icon(
