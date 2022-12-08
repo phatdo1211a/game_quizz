@@ -4,6 +4,7 @@ Widget normalText({
   String? text,
   Color? color,
   double? size,
+  
 }) {
   return Text(
     text!,

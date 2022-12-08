@@ -3,11 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:game_quizz/object/chu_de_object.dart';
 import 'package:game_quizz/object/profile_object.dart';
 import 'package:game_quizz/play/views/questions_page.dart';
+import 'package:game_quizz/provider/chu_de_provider.dart';
 import 'package:game_quizz/provider/google_sign_in.dart';
 import 'package:game_quizz/screens/leaderboard_screen.dart';
 import 'package:game_quizz/screens/nextpage.dart';
+import 'package:game_quizz/screens/play_screen.dart';
 import 'package:game_quizz/screens/profile_screen.dart';
 import 'package:game_quizz/screens/quizz_screen.dart';
 import 'package:provider/provider.dart';
@@ -32,32 +35,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String email;
+  
   _HomeScreenState({Key? key, required this.email});
   int _currentIndex = 0;
-
-  List<Item> listItem = [
-    Item(
-        img: "assets/khoahoc.jpg",
-        icon: Icons.science_outlined,
-        title: "Khoa Học"),
-    Item(
-        img: "assets/lichsu.jpg",
-        icon: Icons.history_rounded,
-        title: "Lịch Sử"),
-    Item(img: "assets/dialy.png", icon: Icons.sunny_snowing, title: "Địa Lí"),
-    Item(
-        img: "assets/tunhien.png",
-        icon: Icons.nature_outlined,
-        title: "Tự Nhiên"),
-    Item(
-        img: "assets/vanhoa.png",
-        icon: Icons.other_houses_rounded,
-        title: "Văn Hoá"),
-    Item(
-        img: "assets/thethao.jpg",
-        icon: Icons.sports_soccer_outlined,
-        title: "Thể Thao")
-  ];
+  List<ChuDeObject> chuDe=[];
+void loadChuDe() async{
+  final data= await ChuDeProvider.getDataById();
+  setState(() {
+      chuDe=data;
+  });
+}
+@override
+  void initState() {
+    loadChuDe();
+    super.initState();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -148,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               onPressed: () => nextpage(context, LeaderboardScreen()),
               style: ElevatedButton.styleFrom(
-                fixedSize: Size(200, 60),
+                fixedSize: Size(200, 50),
                 backgroundColor: Color.fromARGB(255, 28, 100, 0),
               ),
             ),
@@ -204,13 +197,11 @@ class _HomeScreenState extends State<HomeScreen> {
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
         ),
-        itemCount: listItem.length,
+        itemCount: chuDe.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () {
-              if (index == 0) {
-              nextpage(context,QuizScreen(email: email));
-              }
+              nextpage(context,PlayScreen(email: email, id:chuDe[index].id));
             },
             child: Card(
               clipBehavior: Clip.antiAlias,
@@ -219,9 +210,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: <Widget>[
-                    Expanded(child: Image.asset(listItem[index].img!)),
-                    Icon(listItem[index].icon),
-                    Text(listItem[index].title!),
+                    Expanded(child: Image.network(chuDe[index].image.toString())),
+                    Text(chuDe[index].chude, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
                   ],
                 ),
               ),

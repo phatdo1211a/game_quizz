@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:game_quizz/object/profile_object.dart';
 import 'package:game_quizz/provider/profie_provider.dart';
@@ -17,15 +18,16 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<ProfileObject>>(
-      future: ProfileProvider.getUsers(email),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<ProfileObject> thongTin = snapshot.data!;
-          return Scaffold(
-            backgroundColor: Colors.green,
-            body:  Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+        future: ProfileProvider.getUsers(email),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<ProfileObject> thongTin = snapshot.data!;
+            final users = FirebaseAuth.instance.currentUser;
+            return Scaffold(
+              backgroundColor: Colors.green,
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -35,14 +37,16 @@ class _ProfileState extends State<Profile> {
                       children: <Widget>[
                         const Center(
                           child: CircleAvatar(
-                            backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_960_720.png', scale: 20),
+                            backgroundImage: NetworkImage(
+                                'https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_960_720.png',
+                                scale: 20),
                             radius: 40.0,
                           ),
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                         Text(
+                        Text(
                           thongTin[0].name,
                           style: TextStyle(
                             fontSize: 30,
@@ -52,7 +56,7 @@ class _ProfileState extends State<Profile> {
                         const SizedBox(
                           height: 10,
                         ),
-                         Text(
+                        Text(
                           thongTin[0].phone,
                           style: TextStyle(
                             fontSize: 20,
@@ -62,7 +66,7 @@ class _ProfileState extends State<Profile> {
                         const SizedBox(
                           height: 15,
                         ),
-                         Text(
+                        Text(
                           thongTin[0].email,
                           style: TextStyle(
                             fontSize: 20,
@@ -77,11 +81,9 @@ class _ProfileState extends State<Profile> {
                   ),
                 ],
               ),
-
-          );
-        }
-        return Text('');
-      }
-    );
+            );
+          }
+          return Text('');
+        });
   }
 }

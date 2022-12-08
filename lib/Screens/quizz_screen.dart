@@ -248,7 +248,7 @@ class _QuizScreenState extends State<QuizScreen> {
                               data[currentQuestionIndex]["correct_answer"];
                           return GestureDetector(
                             onTap: () {
-                              setState(() async {
+                              setState(()  {
                                 if (answer.toString() ==
                                     optionsList[index].toString()) {
                                   optionsColor[index] = Colors.green;
@@ -275,7 +275,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                   }
                                 }
                                 if (currentQuestionIndex < data.length - 1) {
-                                  await Future.delayed(const Duration(seconds: 1),
+                                   Future.delayed(const Duration(seconds: 1),
                                       () {
                                     gotoNextQuestion();
                                   });
@@ -308,11 +308,11 @@ class _QuizScreenState extends State<QuizScreen> {
                                 color: optionsColor[index],
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: headingText(
-                                color: blue,
-                                size: 18,
-                                text: optionsList[index].toString(),
-                              ),
+                              // child: headingText(
+                              //   color: blue,
+                              //   size: 18,
+                              //   text: optionsList[index].toString(),
+                              // ),
                             ),
                           );
                         },

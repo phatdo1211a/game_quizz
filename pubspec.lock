@@ -162,6 +162,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.1+9"
+  firebase_messaging_platform_interface:
+    dependency: "direct overridden"
+    description:
+      name: firebase_messaging_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.6"
   flint:
     dependency: "direct dev"
     description:

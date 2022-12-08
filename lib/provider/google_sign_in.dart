@@ -8,7 +8,7 @@ import '../screens/home.dart';
 
 class GoogleSignInProvider extends ChangeNotifier {
   GoogleSignInProvider();
-  var firebaseUser = FirebaseAuth.instance.currentUser;
+   CollectionReference users =FirebaseFirestore.instance.collection('users');
   final googleSignIn = GoogleSignIn();
   GoogleSignInAccount? _user;
   GoogleSignInAccount get user => _user!;
@@ -23,15 +23,22 @@ class GoogleSignInProvider extends ChangeNotifier {
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
+        await FirebaseAuth.instance.signInWithCredential(credential);
+        // users.add({
+        //   'email': googleUser.email,
+        //   'name': googleUser.displayName,
+        //   'phone': '0123456789'
+        // });
+        print("sign in success");
       } catch (e) {
         print("failed login!");
       }
     }
+    notifyListeners();
   }
 
   Future googleLogout(context) async {
     await googleSignIn.signOut();
-    await FirebaseAuth.instance.signOut();
-    notifyListeners();
+    FirebaseAuth.instance.signOut();
   }
 }
