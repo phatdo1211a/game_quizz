@@ -25,19 +25,19 @@ class PlayScreen extends StatefulWidget {
 }
 
 class _PlayScreenState extends State<PlayScreen> {
+  @override
   late String a, b, c, d;
   var isLoaded = false;
-  int soCau = 1;
   Timer? timer;
   int seconds = 10;
-  int maxsecond = 10;
-  int heart = 10;
+  int maxsecond=10;
+  int heart = 3;
   var currentQuestionIndex = 0;
 
   var optionsList = [];
   int points = 0;
   List<CauHoiObject> cauHoi = [];
-  @override
+
   var optionsColor1 = [
     Colors.white,
   ];
@@ -50,24 +50,69 @@ class _PlayScreenState extends State<PlayScreen> {
   var optionsColor4 = [
     Colors.white,
   ];
-  // resetColors() {
-  //   optionsColor = [
-  //     Colors.white,
-  //     Colors.white,
-  //     Colors.white,
-  //     Colors.white,
-  //     Colors.white,
-  //     Colors.white,
-  //   ];
-  // }
+  resetColors() {
+    optionsColor1 = [
+      Colors.white,
+    ];
+    optionsColor2 = [
+      Colors.white,
+    ];
+    optionsColor3 = [
+      Colors.white,
+    ];
+    optionsColor4 = [
+      Colors.white,
+    ];
+  }
+
+  void resetGame() {
+    isLoaded = false;
+    currentQuestionIndex = 0;
+    resetColors();
+    timer?.cancel();
+    seconds = 10;
+    points = 0;
+    // is5050Used = false;
+    // isSwitchUsed = false;
+  }
 
   gotoNextQuestion() {
     isLoaded = false;
-    soCau++;
-    //resetColors();
+    currentQuestionIndex++;
+    resetColors();
     timer!.cancel();
-    seconds = 11;
+    seconds = 10;
+    maxsecond=10;
     startTimer();
+  }
+
+  void initState() {
+    super.initState();
+      startTimer();
+  }
+  @override
+  void dispose() {
+    timer!.cancel();
+    super.dispose();
+  }
+
+  void hetMang() {
+     if (heart == 0) {
+          setState(() {
+            currentQuestionIndex = currentQuestionIndex;
+            timer?.cancel();
+            customAlert(
+                    context: context,
+                    onPressed: () {
+                      heart+=1;
+                      Navigator.pop(context);
+                    },
+                    title: 'Ồ đã hết lượt chơi rồi!',
+                    desc: "Bạn có $points vàng",
+                    text: 'Thêm một lượt chơi')
+                .show();
+          });
+        }
   }
 
   startTimer() {
@@ -77,22 +122,8 @@ class _PlayScreenState extends State<PlayScreen> {
           seconds--;
         } else {
           timer.cancel();
-          if (heart == 0) {
-            setState(() {
-              timer.cancel();
-            });
-            customAlert(
-                    context: context,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    title: 'Ồ đã hết lượt chơi rồi!',
-                    desc: "Bạn có $points vàng",
-                    text: 'Đồng ý')
-                .show();
-          }
           heart--;
-          gotoNextQuestion();
+          //gotoNextQuestion();
         }
       });
     });
@@ -107,10 +138,10 @@ class _PlayScreenState extends State<PlayScreen> {
         if (snapshot.hasData) {
           List<CauHoiObject> cauHoi = snapshot.data!;
           if (isLoaded == false) {
-            a = cauHoi[0].dap_an_1;
-            b = cauHoi[0].dap_an_2;
-            c = cauHoi[0].dap_an_3;
-            d = cauHoi[0].dap_an_4;
+            a = cauHoi[currentQuestionIndex].dap_an_1.toString();
+            b = cauHoi[currentQuestionIndex].dap_an_2.toString();
+            c = cauHoi[currentQuestionIndex].dap_an_3.toString();
+            d = cauHoi[currentQuestionIndex].dap_an_4.toString();
             isLoaded = true;
           }
           return Scaffold(
@@ -143,12 +174,12 @@ class _PlayScreenState extends State<PlayScreen> {
                                     context: context,
                                     title: "Thoát trò chơi",
                                     desc:
-                                        "Chúc mừng bạn đã hoàn thành và có $points điểm.!",
+                                        "Kết thúc trò chơi và bạn có $points điểm",
                                     text: "Thoát",
                                     onPressed: () {
                                       setState(() {
-                                        timer?.cancel();
-                                        // resetGame();
+                                        timer!.cancel();
+                                        resetGame();
                                       });
                                       nextpage(
                                           context,
@@ -183,8 +214,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                       color: Color.fromARGB(255, 228, 207, 16),
                                       size: 18),
                                   label: normalText(
-                                      color: Colors.white,
-                                      text: "${points.toString()}")),
+                                      color: Colors.white, text: "$points")),
                             ],
                           ),
                         ],
@@ -194,9 +224,7 @@ class _PlayScreenState extends State<PlayScreen> {
                         alignment: Alignment.center,
                         children: [
                           normalText(
-                              color: Colors.white,
-                              size: 20,
-                              text: "${seconds}"),
+                              color: Colors.white, size: 20, text: "$seconds"),
                           SizedBox(
                             width: 60,
                             height: 60,
@@ -214,12 +242,12 @@ class _PlayScreenState extends State<PlayScreen> {
                           child: normalText(
                               color: lightgrey,
                               size: 20,
-                              text: 'Câu số ${cauHoi[0].id.toString()}:')),
+                              text: 'Câu số ${currentQuestionIndex + 1}:')),
                       const SizedBox(height: 20),
                       normalText(
                           color: Colors.white,
                           size: 25,
-                          text: '${cauHoi[0].cauHoi}'),
+                          text: '${cauHoi[currentQuestionIndex].cauHoi}'),
                       const SizedBox(height: 20),
                       ListView.builder(
                           shrinkWrap: true,
@@ -230,15 +258,48 @@ class _PlayScreenState extends State<PlayScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      if (cauHoi[index].dap_an_1 ==
-                                          cauHoi[index]
+                                      if (cauHoi[index]
                                               .dap_an_dung
-                                              .toString()) {
+                                              .toString() ==
+                                          a) {
                                         optionsColor1[index] = Colors.green;
+                                        points += 1;
+                                        hetMang();
                                       } else {
                                         optionsColor1[index] = Colors.red;
+                                        heart -= 1;
+                                        hetMang();
                                       }
                                     });
+                                    if (currentQuestionIndex <
+                                        cauHoi.length - 1) {
+                                      Future.delayed(const Duration(seconds: 1),
+                                          () {
+                                            setState(() {
+                                               gotoNextQuestion();
+                                            });
+                                      });
+                                    } else {
+                                      timer!.cancel();
+                                      customAlert(
+                                              context: context,
+                                              onPressed: () {
+                                                setState(() {
+                                                  timer!.cancel();
+                                                  resetGame();
+                                                });
+                                                nextpage(
+                                                    context,
+                                                    HomeScreen(
+                                                        email:
+                                                            this.widget.email));
+                                              },
+                                              title: 'Bạn đã hoàn thành ',
+                                              desc:
+                                                  "Chúc mừng bạn đã có $points vàng.",
+                                              text: 'Màn hình chính')
+                                          .show();
+                                    }
                                   },
                                   child: Container(
                                     margin: const EdgeInsets.only(bottom: 20),
@@ -258,12 +319,50 @@ class _PlayScreenState extends State<PlayScreen> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    if (cauHoi[index].dap_an_dung ==
-                                        cauHoi[index].dap_an_2) {
-                                      optionsColor2[index] = Colors.green;
-                                    } else {
-                                      optionsColor2[index] = Colors.red;
-                                    }
+                                    setState(() {
+                                      if (cauHoi[currentQuestionIndex]
+                                              .dap_an_dung
+                                              .toString() ==
+                                          b) {
+                                        optionsColor2[index] = Colors.green;
+                                        points += 1;
+                                        hetMang();
+                                      } else {
+                                        optionsColor2[index] = Colors.red;
+                                        heart -= 1;
+                                        hetMang();
+                                      }
+                                      if (currentQuestionIndex <
+                                          cauHoi.length - 1) {
+                                        Future.delayed(
+                                            const Duration(seconds: 1), () {
+                                              setState(() {
+                                                gotoNextQuestion();
+                                              });
+                                        });
+                                      } else {
+                                        timer!.cancel();
+                                        customAlert(
+                                                context: context,
+                                                onPressed: () {
+                                                  setState(() {
+                                                    timer!.cancel();
+                                                    resetGame();
+                                                  });
+                                                  nextpage(
+                                                      context,
+                                                      HomeScreen(
+                                                          email: this
+                                                              .widget
+                                                              .email));
+                                                },
+                                                title: 'Bạn đã hoàn thành ',
+                                                desc:
+                                                    "Chúc mừng bạn đã có $points vàng. Hãy thử lại nào.",
+                                                text: 'Đồng ý')
+                                            .show();
+                                      }
+                                    });
                                   },
                                   child: Container(
                                     margin: const EdgeInsets.only(bottom: 20),
@@ -283,12 +382,50 @@ class _PlayScreenState extends State<PlayScreen> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    if (cauHoi[index].dap_an_dung ==
-                                        cauHoi[index].dap_an_3) {
-                                      optionsColor3[index] = Colors.green;
-                                    } else {
-                                      optionsColor3[index] = Colors.red;
-                                    }
+                                    setState(() {
+                                      if (cauHoi[currentQuestionIndex]
+                                              .dap_an_dung
+                                              .toString() ==
+                                          c) {
+                                        optionsColor3[index] = Colors.green;
+                                        points += 1;
+                                        hetMang(); 
+                                      } else {
+                                        optionsColor3[index] = Colors.red;
+                                        heart -= 1;
+                                        hetMang();
+                                      }
+                                      if (currentQuestionIndex <
+                                          cauHoi.length - 1) {
+                                        Future.delayed(
+                                            const Duration(seconds: 1), () {
+                                           setState(() {
+                                                gotoNextQuestion();
+                                              });
+                                        });
+                                      } else {
+                                        timer!.cancel();
+                                        customAlert(
+                                                context: context,
+                                                onPressed: () {
+                                                  setState(() {
+                                                    timer!.cancel();
+                                                    resetGame();
+                                                  });
+                                                  nextpage(
+                                                      context,
+                                                      HomeScreen(
+                                                          email: this
+                                                              .widget
+                                                              .email));
+                                                },
+                                                title: 'Bạn đã hoàn thành ',
+                                                desc:
+                                                    "Chúc mừng bạn đã có $points vàng. Hãy thử lại nào.",
+                                                text: 'Đồng ý')
+                                            .show();
+                                      }
+                                    });
                                   },
                                   child: Container(
                                     margin: const EdgeInsets.only(bottom: 20),
@@ -308,12 +445,50 @@ class _PlayScreenState extends State<PlayScreen> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    if (cauHoi[index].dap_an_dung ==
-                                        cauHoi[index].dap_an_4) {
-                                      optionsColor4[index] = Colors.green;
-                                    } else {
-                                      optionsColor4[index] = Colors.red;
-                                    }
+                                    setState(() {
+                                      if (cauHoi[currentQuestionIndex]
+                                              .dap_an_dung
+                                              .toString() ==
+                                          d) {
+                                        optionsColor4[index] = Colors.green;
+                                        points += 1;
+                                          hetMang();
+                                      } else {
+                                        optionsColor4[index] = Colors.red;
+                                        heart -= 1;
+                                        hetMang();
+                                      }
+                                      if (currentQuestionIndex <
+                                          cauHoi.length - 1) {
+                                        Future.delayed(
+                                            const Duration(seconds: 1), () {
+                                          setState(() {
+                                                gotoNextQuestion();
+                                              });
+                                        });
+                                      } else {
+                                        timer!.cancel();
+                                        customAlert(
+                                                context: context,
+                                                onPressed: () {
+                                                  setState(() {
+                                                    timer!.cancel();
+                                                    resetGame();
+                                                  });
+                                                  nextpage(
+                                                      context,
+                                                      HomeScreen(
+                                                          email: this
+                                                              .widget
+                                                              .email));
+                                                },
+                                                title: 'Bạn đã hoàn thành ',
+                                                desc:
+                                                    "Chúc mừng bạn đã có $points vàng. Hãy thử lại nào.",
+                                                text: 'Đồng ý')
+                                            .show();
+                                      }
+                                    });
                                   },
                                   child: Container(
                                     margin: const EdgeInsets.only(bottom: 20),
