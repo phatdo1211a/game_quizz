@@ -73,9 +73,7 @@ class _ProfileState extends State<Profile> {
                             color: Colors.yellow,
                           ),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        
                       ],
                     ),
                   ),

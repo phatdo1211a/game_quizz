@@ -15,7 +15,7 @@ Alert customAlert({
       desc: desc,
       style: AlertStyle(
         isCloseButton: false,
-        isOverlayTapDismiss: false,
+       isOverlayTapDismiss: false,
       ),
       buttons: [
         DialogButton(

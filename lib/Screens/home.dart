@@ -198,7 +198,7 @@ void loadChuDe() async{
           crossAxisCount: 2,
         ),
         itemCount: chuDe.length,
-        itemBuilder: (BuildContext context, int index) {
+        itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
               nextpage(context,PlayScreen(email: email, id:chuDe[index].id));
