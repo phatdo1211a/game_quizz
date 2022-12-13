@@ -1,16 +1,13 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:game_quizz/const/image.dart';
 import 'package:game_quizz/object/cau_hoi_object.dart';
-import 'package:game_quizz/object/chu_de_object.dart';
 import 'package:game_quizz/provider/cau_hoi_provider.dart';
 import 'package:game_quizz/screens/home.dart';
-
 import '../const/colors.dart';
 import '../const/text_style.dart';
 import '../play/components/custome_alert.dart';
+import '../play/components/helping_icons_row.dart';
 import '../provider/chu_de_provider.dart';
 import 'nextpage.dart';
 
@@ -30,8 +27,10 @@ class _PlayScreenState extends State<PlayScreen> {
   var isLoaded = false;
   Timer? timer;
   int seconds = 10;
-  int maxsecond=10;
-  int heart = 3;
+  int maxsecond = 10;
+  int heart = 5;
+  bool is5050Used = false;
+  bool isSwitchUsed = false;
   var currentQuestionIndex = 0;
 
   var optionsList = [];
@@ -72,8 +71,8 @@ class _PlayScreenState extends State<PlayScreen> {
     timer?.cancel();
     seconds = 10;
     points = 0;
-    // is5050Used = false;
-    // isSwitchUsed = false;
+    is5050Used = false;
+    isSwitchUsed = false;
   }
 
   gotoNextQuestion() {
@@ -82,29 +81,33 @@ class _PlayScreenState extends State<PlayScreen> {
     resetColors();
     timer!.cancel();
     seconds = 10;
-    maxsecond=10;
+    maxsecond = 10;
     startTimer();
   }
 
   void initState() {
     super.initState();
-      startTimer();
+    startTimer();
   }
+
   @override
   void dispose() {
-    timer!.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
-  void hetMang() {
-     if (heart == 0) {
+  startTimer() {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (heart <= 0) {
           setState(() {
+            timer.cancel();
             currentQuestionIndex = currentQuestionIndex;
-            timer?.cancel();
             customAlert(
                     context: context,
                     onPressed: () {
-                      heart+=1;
+                      gotoNextQuestion();
+                      heart += 1;
                       Navigator.pop(context);
                     },
                     title: 'Ồ đã hết lượt chơi rồi!',
@@ -113,17 +116,12 @@ class _PlayScreenState extends State<PlayScreen> {
                 .show();
           });
         }
-  }
-
-  startTimer() {
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
         if (seconds > 0) {
           seconds--;
         } else {
           timer.cancel();
           heart--;
-          //gotoNextQuestion();
+          gotoNextQuestion();
         }
       });
     });
@@ -138,11 +136,15 @@ class _PlayScreenState extends State<PlayScreen> {
         if (snapshot.hasData) {
           List<CauHoiObject> cauHoi = snapshot.data!;
           if (isLoaded == false) {
-            a = cauHoi[currentQuestionIndex].dap_an_1.toString();
-            b = cauHoi[currentQuestionIndex].dap_an_2.toString();
-            c = cauHoi[currentQuestionIndex].dap_an_3.toString();
-            d = cauHoi[currentQuestionIndex].dap_an_4.toString();
-            isLoaded = true;
+            if (currentQuestionIndex < 10) {
+              a = cauHoi[currentQuestionIndex].dap_an_1.toString();
+              b = cauHoi[currentQuestionIndex].dap_an_2.toString();
+              c = cauHoi[currentQuestionIndex].dap_an_3.toString();
+              d = cauHoi[currentQuestionIndex].dap_an_4.toString();
+              isLoaded = true;
+            } else {
+              print('Hết câu hỏi');
+            }
           }
           return Scaffold(
             body: SafeArea(
@@ -247,7 +249,9 @@ class _PlayScreenState extends State<PlayScreen> {
                       normalText(
                           color: Colors.white,
                           size: 25,
-                          text: '${cauHoi[currentQuestionIndex].cauHoi}'),
+                          text: currentQuestionIndex < 10
+                              ? '${cauHoi[currentQuestionIndex].cauHoi}'
+                              : ''),
                       const SizedBox(height: 20),
                       ListView.builder(
                           shrinkWrap: true,
@@ -258,47 +262,52 @@ class _PlayScreenState extends State<PlayScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      if (cauHoi[index]
+                                      if (cauHoi[currentQuestionIndex]
                                               .dap_an_dung
                                               .toString() ==
                                           a) {
                                         optionsColor1[index] = Colors.green;
                                         points += 1;
-                                        hetMang();
                                       } else {
                                         optionsColor1[index] = Colors.red;
                                         heart -= 1;
-                                        hetMang();
                                       }
                                     });
                                     if (currentQuestionIndex <
                                         cauHoi.length - 1) {
                                       Future.delayed(const Duration(seconds: 1),
                                           () {
-                                            setState(() {
-                                               gotoNextQuestion();
-                                            });
+                                        setState(() {
+                                          gotoNextQuestion();
+                                        });
                                       });
                                     } else {
                                       timer!.cancel();
-                                      customAlert(
-                                              context: context,
-                                              onPressed: () {
-                                                setState(() {
-                                                  timer!.cancel();
-                                                  resetGame();
-                                                });
-                                                nextpage(
-                                                    context,
-                                                    HomeScreen(
-                                                        email:
-                                                            this.widget.email));
-                                              },
-                                              title: 'Bạn đã hoàn thành ',
-                                              desc:
-                                                  "Chúc mừng bạn đã có $points vàng.",
-                                              text: 'Màn hình chính')
-                                          .show();
+                                      if (currentQuestionIndex > 10 &&
+                                          cauHoi[currentQuestionIndex]
+                                                  .cauHoi
+                                                  .length >
+                                              10) {
+                                        customAlert(
+                                                context: context,
+                                                onPressed: () {
+                                                  setState(() {
+                                                    timer!.cancel();
+                                                    resetGame();
+                                                  });
+                                                  nextpage(
+                                                      context,
+                                                      HomeScreen(
+                                                          email: this
+                                                              .widget
+                                                              .email));
+                                                },
+                                                title: 'Bạn đã hoàn thành ',
+                                                desc:
+                                                    "Chúc mừng bạn đã có $points vàng.",
+                                                text: 'Màn hình chính')
+                                            .show();
+                                      }
                                     }
                                   },
                                   child: Container(
@@ -326,19 +335,17 @@ class _PlayScreenState extends State<PlayScreen> {
                                           b) {
                                         optionsColor2[index] = Colors.green;
                                         points += 1;
-                                        hetMang();
                                       } else {
                                         optionsColor2[index] = Colors.red;
                                         heart -= 1;
-                                        hetMang();
                                       }
                                       if (currentQuestionIndex <
                                           cauHoi.length - 1) {
                                         Future.delayed(
                                             const Duration(seconds: 1), () {
-                                              setState(() {
-                                                gotoNextQuestion();
-                                              });
+                                          setState(() {
+                                            gotoNextQuestion();
+                                          });
                                         });
                                       } else {
                                         timer!.cancel();
@@ -389,19 +396,17 @@ class _PlayScreenState extends State<PlayScreen> {
                                           c) {
                                         optionsColor3[index] = Colors.green;
                                         points += 1;
-                                        hetMang(); 
                                       } else {
                                         optionsColor3[index] = Colors.red;
                                         heart -= 1;
-                                        hetMang();
                                       }
                                       if (currentQuestionIndex <
                                           cauHoi.length - 1) {
                                         Future.delayed(
                                             const Duration(seconds: 1), () {
-                                           setState(() {
-                                                gotoNextQuestion();
-                                              });
+                                          setState(() {
+                                            gotoNextQuestion();
+                                          });
                                         });
                                       } else {
                                         timer!.cancel();
@@ -452,19 +457,17 @@ class _PlayScreenState extends State<PlayScreen> {
                                           d) {
                                         optionsColor4[index] = Colors.green;
                                         points += 1;
-                                          hetMang();
                                       } else {
                                         optionsColor4[index] = Colors.red;
                                         heart -= 1;
-                                        hetMang();
                                       }
                                       if (currentQuestionIndex <
                                           cauHoi.length - 1) {
                                         Future.delayed(
                                             const Duration(seconds: 1), () {
                                           setState(() {
-                                                gotoNextQuestion();
-                                              });
+                                            gotoNextQuestion();
+                                          });
                                         });
                                       } else {
                                         timer!.cancel();
@@ -508,7 +511,82 @@ class _PlayScreenState extends State<PlayScreen> {
                                 ),
                               ],
                             );
-                          })
+                          }),
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              helpingIconsRow(
+                                is5050UsedValue: is5050Used,
+                                isSwitchUsedValue: isSwitchUsed,
+                                functionOF5050: () {
+                                  setState(() {
+                                    String dapAnDung =
+                                        cauHoi[currentQuestionIndex]
+                                            .dap_an_dung
+                                            .toString();
+                                    if (is5050Used == false) {
+                                      int myCount = 0;
+                                      for (int i = 0; i < 1; i++) {
+                                        if (cauHoi[currentQuestionIndex]
+                                                    .dap_an_1[i] !=
+                                                cauHoi[currentQuestionIndex]
+                                                    .dap_an_dung &&
+                                            myCount <= 1 &&
+                                            a == dapAnDung) {
+                                          b = '';
+                                          c = '';
+
+                                          myCount++;
+                                        } else if (cauHoi[currentQuestionIndex]
+                                                    .dap_an_2[i] !=
+                                                cauHoi[currentQuestionIndex]
+                                                    .dap_an_dung &&
+                                            myCount <= 1 &&
+                                            b == dapAnDung) {
+                                          c = ' ';
+                                          d = ' ';
+                                          myCount++;
+                                        } else if (cauHoi[currentQuestionIndex]
+                                                    .dap_an_3[i] !=
+                                                cauHoi[currentQuestionIndex]
+                                                    .dap_an_dung &&
+                                            myCount <= 1 &&
+                                            c == dapAnDung) {
+                                          a = ' ';
+                                          d = ' ';
+                                          myCount++;
+                                        } else if (cauHoi[currentQuestionIndex]
+                                                    .dap_an_4[i] !=
+                                                cauHoi[currentQuestionIndex]
+                                                    .dap_an_dung &&
+                                            myCount <= 1 &&
+                                            d == dapAnDung) {
+                                          a = ' ';
+                                          c = ' ';
+                                          myCount++;
+                                        }
+                                      }
+                                      is5050Used = true;
+                                    }
+                                  });
+                                },
+                                switchFunction: () {
+                                  setState(() {
+                                    if (isSwitchUsed == false) {
+                                      gotoNextQuestion();
+                                      isSwitchUsed = true
+                                      ;
+                                    }
+                                  });
+                                },
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                     ],
                   ),
                 ),

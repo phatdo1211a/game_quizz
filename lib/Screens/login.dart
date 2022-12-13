@@ -39,6 +39,7 @@ class _LoginAppState extends State<LoginApp> {
 
   late bool _showPass = false;
 
+
   @override
   Widget build(BuildContext context) {
     const edgeInsets = EdgeInsets.fromLTRB(10, 10, 10, 10);
@@ -137,6 +138,7 @@ class _LoginAppState extends State<LoginApp> {
                               fontSize: 26, fontWeight: FontWeight.w400),
                         ),
                         style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(255, 28, 100, 0),
                           fixedSize: Size(400, 55),
                           shape: StadiumBorder(),
                           padding: edgeInsets,
@@ -148,7 +150,7 @@ class _LoginAppState extends State<LoginApp> {
                       child: Row(children: <Widget>[
                         Expanded(
                             child: Divider(
-                          color: Colors.blue,
+                          color: Color.fromARGB(255, 28, 100, 0),
                           thickness: 1,
                         )),
                         Text(
@@ -158,11 +160,12 @@ class _LoginAppState extends State<LoginApp> {
                         ),
                         Expanded(
                             child: Divider(
-                          color: Colors.blue,
+                          color: Color.fromARGB(255, 28, 100, 0),
                           thickness: 1,
                         )),
                       ]),
                     ),
+
 
                     Padding(
                       padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
@@ -230,7 +233,8 @@ class _LoginAppState extends State<LoginApp> {
             },
             child: Text(
               "Đăng kí",
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 20, color: Color.fromARGB(255, 28, 100, 0)),
+              
             ))
       ],
     );

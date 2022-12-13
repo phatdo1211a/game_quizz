@@ -10,8 +10,8 @@ Widget text_quizz(BuildContext context) {
           style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black54),
         ),
         TextSpan(text: 'Game',
-        style: TextStyle(fontWeight: FontWeight.w900, color: Colors.blue),),
+        style: TextStyle(fontWeight: FontWeight.w900, color: Color.fromARGB(255, 28, 100, 0)),),
       ], 
     ),
   );
-}
+} 

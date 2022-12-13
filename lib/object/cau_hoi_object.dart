@@ -1,5 +1,5 @@
 class CauHoiObject {
-  final String id;
+  final int id;
   final String cauHoi;
   final String dap_an_dung;
   final String dap_an_1;
