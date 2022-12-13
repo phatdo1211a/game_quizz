@@ -120,8 +120,8 @@ void loadChuDe() async{
         ),
         body: cardItem(_currentIndex),
         bottomNavigationBar: Container(
-          width: 300,
-          height: 200,
+          width: 70,
+          height: 90,
           padding: EdgeInsets.all(10),
           child: Card(
             shape: RoundedRectangleBorder(

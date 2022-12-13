@@ -577,8 +577,29 @@ class _PlayScreenState extends State<PlayScreen> {
                                   setState(() {
                                     if (isSwitchUsed == false) {
                                       gotoNextQuestion();
-                                      isSwitchUsed = true
-                                      ;
+                                      isSwitchUsed = true;
+                                      if (currentQuestionIndex >= 10) {
+                                        timer?.cancel();
+                                        customAlert(
+                                                context: context,
+                                                onPressed: () {
+                                                  setState(() {
+                                                    timer!.cancel();
+                                                    resetGame();
+                                                  });
+                                                  nextpage(
+                                                      context,
+                                                      HomeScreen(
+                                                          email: this
+                                                              .widget
+                                                              .email));
+                                                },
+                                                title: 'Bạn đã hoàn thành ',
+                                                desc:
+                                                    "Chúc mừng bạn đã có $points vàng. Hãy thử lại nào.",
+                                                text: 'Đồng ý')
+                                            .show();
+                                      }
                                     }
                                   });
                                 },
