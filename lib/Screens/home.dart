@@ -1,18 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:game_quizz/object/chu_de_object.dart';
 import 'package:game_quizz/object/profile_object.dart';
-import 'package:game_quizz/play/views/questions_page.dart';
 import 'package:game_quizz/provider/chu_de_provider.dart';
 import 'package:game_quizz/provider/google_sign_in.dart';
 import 'package:game_quizz/screens/leaderboard_screen.dart';
 import 'package:game_quizz/screens/nextpage.dart';
 import 'package:game_quizz/screens/play_screen.dart';
 import 'package:game_quizz/screens/profile_screen.dart';
-import 'package:game_quizz/screens/quizz_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/profie_provider.dart';

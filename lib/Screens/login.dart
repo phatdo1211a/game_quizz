@@ -23,20 +23,7 @@ class _LoginAppState extends State<LoginApp> {
   TextEditingController _txtEmail = TextEditingController();
   TextEditingController _txtPass = TextEditingController();
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  // var docID;
-  // var querySnapshots;
-  // CollectionReference user = FirebaseFirestore.instance.collection("users");
-  // Future<void> updateUser(var docID) {
-  //   return user
-  //       .doc(docID)
-  //       .update({
-  //         'email': _txtEmail.text,
-  //       })
-  //       .then((value) => Navigator.pop(context, 'Cập nhật thành công'))
-  //       .catchError(
-  //           (error) => Navigator.pop(context, 'Cập nhật thất bại $error'));
-  // }
-
+ 
   late bool _showPass = false;
 
 
@@ -165,8 +152,6 @@ class _LoginAppState extends State<LoginApp> {
                         )),
                       ]),
                     ),
-
-
                     Padding(
                       padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
                       child: Center(
@@ -174,6 +159,7 @@ class _LoginAppState extends State<LoginApp> {
                           Buttons.Google,
                           shape: StadiumBorder(),
                           padding: edgeInsets,
+                          elevation: 10.0,
                           text: "Đăng nhập bằng google",
                           onPressed: () async {
                             final provider = Provider.of<GoogleSignInProvider>(
