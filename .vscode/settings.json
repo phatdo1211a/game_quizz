@@ -1,7 +1,17 @@
 {
     "cSpell.words": [
         "Fluttertoast",
+        "hhjj",
         "nhan",
         "riverpod"
-    ]
+    ],
+
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
+    "dart.previewFlutterUiGuides": true,
+    
 }
+
+  

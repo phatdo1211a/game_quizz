@@ -10,7 +10,7 @@ import 'package:game_quizz/provider/google_sign_in.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'register.dart';
+import 'package:game_quizz/screens/register.dart';
 
 class LoginApp extends StatefulWidget {
   const LoginApp({super.key});
@@ -20,12 +20,13 @@ class LoginApp extends StatefulWidget {
 }
 
 class _LoginAppState extends State<LoginApp> {
-  TextEditingController _txtEmail = TextEditingController();
-  TextEditingController _txtPass = TextEditingController();
-  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
- 
-  late bool _showPass = false;
+  final TextEditingController _txtEmail = TextEditingController();
+  final TextEditingController _txtPass = TextEditingController();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  User? firebaseUser = FirebaseAuth.instance.currentUser;
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
 
+  late bool _showPass = false;
 
   @override
   Widget build(BuildContext context) {
@@ -35,39 +36,38 @@ class _LoginAppState extends State<LoginApp> {
         body: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
                 child: Column(
                   children: [
                     Image.asset(
-                      "assets/image.png",
+                      'assets/image.png',
                       width: 100,
                       height: 100,
                     ),
                     text_quizz(context),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     //Email
                     Padding(
-                      padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                       child: TextField(
                         controller: _txtEmail,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          hintText: "Email",
+                          hintText: 'Email',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
                               borderSide: BorderSide.none),
                           fillColor:
                               Theme.of(context).primaryColor.withOpacity(0.1),
                           filled: true,
-                          prefixIcon: Icon(Icons.email_outlined),
+                          prefixIcon: const Icon(Icons.email_outlined),
                         ),
                       ),
                     ),
                     //Mật khẩu
                     Padding(
-                      padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                       child: Stack(
                         alignment: AlignmentDirectional.centerEnd,
                         children: [
@@ -75,7 +75,7 @@ class _LoginAppState extends State<LoginApp> {
                             obscureText: !_showPass,
                             controller: _txtPass,
                             decoration: InputDecoration(
-                              hintText: "Mật khẩu",
+                              hintText: 'Mật khẩu',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20),
                                 borderSide: BorderSide.none,
@@ -84,7 +84,7 @@ class _LoginAppState extends State<LoginApp> {
                                   .primaryColor
                                   .withOpacity(0.1),
                               filled: true,
-                              prefixIcon: Icon(Icons.password_outlined),
+                              prefixIcon: const Icon(Icons.password_outlined),
                             ),
                           ),
                           GestureDetector(
@@ -100,11 +100,11 @@ class _LoginAppState extends State<LoginApp> {
                     ),
 
                     Padding(
-                      padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                       child: ElevatedButton(
                         onPressed: () async {
                           try {
-                            final _user =
+                            final user =
                                 await _firebaseAuth.signInWithEmailAndPassword(
                                     email: _txtEmail.text,
                                     password: _txtPass.text);
@@ -114,34 +114,35 @@ class _LoginAppState extends State<LoginApp> {
                                     context, HomeScreen(email: _txtEmail.text));
                               }
                             });
-                            thongbao("Đăng nhập thành công");
+                            thongbao('Đăng nhập thành công');
                           } on FirebaseAuthException catch (e) {
                             thongbao(e.message.toString());
                           }
                         },
-                        child: Text(
-                          "Đăng nhập",
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 28, 100, 0),
+                          fixedSize: const Size(400, 55),
+                          shape: const StadiumBorder(),
+                          padding: edgeInsets,
+                        ),
+                        child: const Text(
+                          'Đăng nhập',
                           style: TextStyle(
                               fontSize: 26, fontWeight: FontWeight.w400),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 28, 100, 0),
-                          fixedSize: Size(400, 55),
-                          shape: StadiumBorder(),
-                          padding: edgeInsets,
                         ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
-                      child: Row(children: <Widget>[
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      child: Row(children: const <Widget>[
                         Expanded(
                             child: Divider(
                           color: Color.fromARGB(255, 28, 100, 0),
                           thickness: 1,
                         )),
                         Text(
-                          "Hoặc",
+                          'Hoặc',
                           style: TextStyle(
                               color: Colors.grey, fontWeight: FontWeight.bold),
                         ),
@@ -153,19 +154,19 @@ class _LoginAppState extends State<LoginApp> {
                       ]),
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                       child: Center(
                         child: SignInButton(
                           Buttons.Google,
-                          shape: StadiumBorder(),
+                          shape: const StadiumBorder(),
                           padding: edgeInsets,
                           elevation: 10.0,
-                          text: "Đăng nhập bằng google",
+                          text: 'Đăng nhập bằng google',
                           onPressed: () async {
                             final provider = Provider.of<GoogleSignInProvider>(
                                 context,
                                 listen: false);
-                            provider.googleLogin(context).then(
+                            await provider.googleLogin(context).then(
                               (value) {
                                 nextpage(
                                     context,
@@ -182,7 +183,7 @@ class _LoginAppState extends State<LoginApp> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                 child: _signup(context),
               ),
             ],
@@ -205,24 +206,22 @@ class _LoginAppState extends State<LoginApp> {
     });
   }
 
-  _signup(context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          "Bạn chưa có tài khoản? ",
-          style: TextStyle(color: Colors.black54, fontSize: 20),
-        ),
-        TextButton(
-            onPressed: () {
-             nextpage(context, Register());
-            },
-            child: Text(
-              "Đăng kí",
-              style: TextStyle(fontSize: 20, color: Color.fromARGB(255, 28, 100, 0)),
-              
-            ))
-      ],
-    );
-  }
+  Row _signup(context) => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            'Bạn chưa có tài khoản? ',
+            style: TextStyle(color: Colors.black54, fontSize: 20),
+          ),
+          TextButton(
+              onPressed: () {
+                nextpage(context, const Register());
+              },
+              child: const Text(
+                'Đăng kí',
+                style: TextStyle(
+                    fontSize: 20, color: Color.fromARGB(255, 28, 100, 0)),
+              ))
+        ],
+      );
 }
