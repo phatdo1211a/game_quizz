@@ -15,7 +15,7 @@ class LichSuObject {
 
   LichSuObject.fromJson(Map<String, dynamic> json)
       : tenNguoiChoi = json['tenNguoiChoi'],
-        ngayChoi = json['ngayChoi'].toString(),
+        ngayChoi = json['ngayChoi'],
         soCauDung = json['soCauDung'],
         soCauSai = json['soCauSai'],
         tongDiem = json['tongDiem'];
