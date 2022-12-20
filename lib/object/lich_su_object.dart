@@ -1,10 +1,9 @@
 class LichSuObject {
   final String tenNguoiChoi;
   final String ngayChoi;
-  final int soCauDung;
-  final int soCauSai;
-  final int tongDiem;
-  final String chuDe;
+  final int? soCauDung;
+  final int? soCauSai;
+  final int? tongDiem;
 
   LichSuObject(
     this.tenNguoiChoi,
@@ -12,15 +11,13 @@ class LichSuObject {
     this.soCauDung,
     this.soCauSai,
     this.tongDiem,
-    this.chuDe,
   );
 
   LichSuObject.fromJson(Map<String, dynamic> json)
       : tenNguoiChoi = json['tenNguoiChoi'],
-        ngayChoi = json['ngayChoi'],
+        ngayChoi = json['ngayChoi'].toString(),
         soCauDung = json['soCauDung'],
         soCauSai = json['soCauSai'],
-        chuDe = json['chuDe'],
         tongDiem = json['tongDiem'];
 
   Map<String, Object?> toJson() => {
@@ -29,6 +26,5 @@ class LichSuObject {
         'soCauDung': soCauDung,
         'soCauSai': soCauSai,
         'tongDiem': tongDiem,
-        'chuDe': chuDe,
       };
 }

@@ -14,7 +14,6 @@ import 'package:game_quizz/const/text_style.dart';
 import 'package:game_quizz/play/components/custome_alert.dart';
 import 'package:game_quizz/play/components/helping_icons_row.dart';
 import 'package:game_quizz/screens/nextpage.dart';
-import 'package:intl/intl.dart';
 
 class PlayScreen extends StatefulWidget {
   String email;
@@ -122,13 +121,12 @@ class _PlayScreenState extends State<PlayScreen> {
     super.dispose();
   }
 
-  Future<void> addLichSu() => lichsu.add({
+  Future<void> addLichSu() async => lichsu.add({
         'tenNguoiChoi': profile[0].name,
-        'ngayChoi': DateFormat('dd/MM/yyyy').format(ngay),
+        'ngayChoi': ngay.toString(),
         'soCauDung': soCauDung,
         'soCauSai': soCauSai,
         'tongDiem': points,
-        'chuDe': chuDe[0].chude,
       });
   hetLuotChoi() {
     timer?.cancel();
@@ -178,7 +176,7 @@ class _PlayScreenState extends State<PlayScreen> {
 
               isLoaded = true;
             } else {
-              print('Hết câu hỏi');
+              print('');
             }
           }
           return Scaffold(
@@ -308,7 +306,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                           optionsColor1[index] = Colors.red;
                                           heart -= 1;
                                           if (heart == 0) {
-                                              timer!.cancel();
+                                            timer!.cancel();
                                             hetLuotChoi();
                                           }
                                           soCauSai++;
@@ -380,7 +378,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                           optionsColor2[index] = Colors.red;
                                           heart -= 1;
                                           if (heart == 0) {
-                                              timer!.cancel();
+                                            timer!.cancel();
                                             hetLuotChoi();
                                           }
 

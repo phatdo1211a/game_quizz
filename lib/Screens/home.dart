@@ -54,16 +54,12 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             backgroundColor: const Color.fromARGB(255, 28, 100, 0),
             title: const Center(
-              child: Text('Home'),
+              child: Align(
+                child: Text('Chủ đề'),
+              ),
             ),
-            elevation: 4.0,
-            actions: const <Widget>[
-              Center(
-                  child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.search),
-              )),
-            ],
+            actions: const [Icon(Icons.home_sharp)],
+            elevation: 12.0,
           ),
           drawer: Drawer(
             child: ListView(
