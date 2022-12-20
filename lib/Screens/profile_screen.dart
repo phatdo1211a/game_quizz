@@ -99,44 +99,8 @@ class _ProfileState extends State<Profile> {
                             ),
                           ],
                         ),
-<<<<<<< HEAD
                       ),
                     ],
-=======
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          thongTin[0].name,
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          thongTin[0].phone,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.yellow,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          thongTin[0].email,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.yellow,
-                          ),
-                        ),
-                        
-                      ],
-                    ),
->>>>>>> 47836af7ffdf6154d77ea0259968c8fb3f8f2476
                   ),
                 ],
               ),

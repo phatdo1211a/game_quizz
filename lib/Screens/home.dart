@@ -184,23 +184,12 @@ class _HomeScreenState extends State<HomeScreen> {
         });
   }
 
-<<<<<<< HEAD
   Widget cardItem(int i) => GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
       ),
       itemCount: chuDe.length,
       itemBuilder: (context, index) => GestureDetector(
-=======
-  Widget cardItem(int i) {
-    return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-        ),
-        itemCount: chuDe.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
->>>>>>> 47836af7ffdf6154d77ea0259968c8fb3f8f2476
             onTap: () {
               nextpage(context, PlayScreen(email: email, id: chuDe[index].id));
             },
