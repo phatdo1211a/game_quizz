@@ -1,20 +1,35 @@
 import 'dart:async';
+<<<<<<< HEAD
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:game_quizz/object/cau_hoi_object.dart';
 import 'package:game_quizz/object/chu_de_object.dart';
 import 'package:game_quizz/object/profile_object.dart';
+=======
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:game_quizz/object/cau_hoi_object.dart';
+>>>>>>> 47836af7ffdf6154d77ea0259968c8fb3f8f2476
 import 'package:game_quizz/provider/cau_hoi_provider.dart';
 import 'package:game_quizz/provider/chu_de_provider.dart';
 import 'package:game_quizz/provider/profile_provider.dart';
 import 'package:game_quizz/screens/home.dart';
+<<<<<<< HEAD
 import 'package:game_quizz/const/colors.dart';
 import 'package:game_quizz/const/text_style.dart';
 import 'package:game_quizz/play/components/custome_alert.dart';
 import 'package:game_quizz/play/components/helping_icons_row.dart';
 import 'package:game_quizz/screens/nextpage.dart';
 import 'package:intl/intl.dart';
+=======
+import '../const/colors.dart';
+import '../const/text_style.dart';
+import '../play/components/custome_alert.dart';
+import '../play/components/helping_icons_row.dart';
+import '../provider/chu_de_provider.dart';
+import 'nextpage.dart';
+>>>>>>> 47836af7ffdf6154d77ea0259968c8fb3f8f2476
 
 class PlayScreen extends StatefulWidget {
   String email;
@@ -34,6 +49,7 @@ class _PlayScreenState extends State<PlayScreen> {
   Timer? timer;
   int seconds = 10;
   int maxsecond = 10;
+<<<<<<< HEAD
   List<ProfileObject> profile = [];
   List<ChuDeObject> chuDe = [];
   late String ngayHienTai;
@@ -43,6 +59,12 @@ class _PlayScreenState extends State<PlayScreen> {
   bool is5050Used = false;
   bool isSwitchUsed = false;
   int currentQuestionIndex = 0;
+=======
+  int heart = 5;
+  bool is5050Used = false;
+  bool isSwitchUsed = false;
+  var currentQuestionIndex = 0;
+>>>>>>> 47836af7ffdf6154d77ea0259968c8fb3f8f2476
 
   List optionsList = [];
   int points = 0;
@@ -96,10 +118,13 @@ class _PlayScreenState extends State<PlayScreen> {
     points = 0;
     is5050Used = false;
     isSwitchUsed = false;
+<<<<<<< HEAD
   }
 
   void getNgay() {
     ngayHienTai = DateFormat('dd/MM/yyyy').format(ngay);
+=======
+>>>>>>> 47836af7ffdf6154d77ea0259968c8fb3f8f2476
   }
 
   gotoNextQuestion() {
@@ -115,9 +140,12 @@ class _PlayScreenState extends State<PlayScreen> {
   @override
   void initState() {
     super.initState();
+<<<<<<< HEAD
     getNgay();
     loadThongTin();
     loadChuDe();
+=======
+>>>>>>> 47836af7ffdf6154d77ea0259968c8fb3f8f2476
     startTimer();
   }
 
@@ -127,6 +155,7 @@ class _PlayScreenState extends State<PlayScreen> {
     super.dispose();
   }
 
+<<<<<<< HEAD
   Future<void> addLichSu() async => lichsu.add({
         'tenNguoiChoi': profile[0].name,
         'ngayChoi': ngayHienTai,
@@ -154,6 +183,28 @@ class _PlayScreenState extends State<PlayScreen> {
   startTimer() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
+=======
+  startTimer() {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (heart <= 0) {
+          setState(() {
+            timer.cancel();
+            currentQuestionIndex = currentQuestionIndex;
+            customAlert(
+                    context: context,
+                    onPressed: () {
+                      gotoNextQuestion();
+                      heart += 1;
+                      Navigator.pop(context);
+                    },
+                    title: 'Ồ đã hết lượt chơi rồi!',
+                    desc: "Bạn có $points vàng",
+                    text: 'Thêm một lượt chơi')
+                .show();
+          });
+        }
+>>>>>>> 47836af7ffdf6154d77ea0259968c8fb3f8f2476
         if (seconds > 0) {
           seconds--;
         } else {
@@ -177,6 +228,7 @@ class _PlayScreenState extends State<PlayScreen> {
           final List<CauHoiObject> cauHoi = snapshot.data!;
           if (isLoaded == false) {
             if (currentQuestionIndex < 10) {
+<<<<<<< HEAD
               a = cauHoi[currentQuestionIndex].dap_an_1;
               b = cauHoi[currentQuestionIndex].dap_an_2;
               c = cauHoi[currentQuestionIndex].dap_an_3;
@@ -185,6 +237,15 @@ class _PlayScreenState extends State<PlayScreen> {
               isLoaded = true;
             } else {
               print('');
+=======
+              a = cauHoi[currentQuestionIndex].dap_an_1.toString();
+              b = cauHoi[currentQuestionIndex].dap_an_2.toString();
+              c = cauHoi[currentQuestionIndex].dap_an_3.toString();
+              d = cauHoi[currentQuestionIndex].dap_an_4.toString();
+              isLoaded = true;
+            } else {
+              print('Hết câu hỏi');
+>>>>>>> 47836af7ffdf6154d77ea0259968c8fb3f8f2476
             }
           }
           return Scaffold(
@@ -292,12 +353,17 @@ class _PlayScreenState extends State<PlayScreen> {
                           color: Colors.white,
                           size: 25,
                           text: currentQuestionIndex < 10
+<<<<<<< HEAD
                               ? cauHoi[currentQuestionIndex].cauHoi
+=======
+                              ? '${cauHoi[currentQuestionIndex].cauHoi}'
+>>>>>>> 47836af7ffdf6154d77ea0259968c8fb3f8f2476
                               : ''),
                       const SizedBox(height: 20),
                       ListView.builder(
                           shrinkWrap: true,
                           itemCount: 1,
+<<<<<<< HEAD
                           itemBuilder: (context, index) => Column(
                                 children: [
                                   GestureDetector(
@@ -643,6 +709,101 @@ class _PlayScreenState extends State<PlayScreen> {
                                       if (currentQuestionIndex >= 10) {
                                         addLichSu();
                                         timer?.cancel();
+=======
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      if (cauHoi[currentQuestionIndex]
+                                              .dap_an_dung
+                                              .toString() ==
+                                          a) {
+                                        optionsColor1[index] = Colors.green;
+                                        points += 1;
+                                      } else {
+                                        optionsColor1[index] = Colors.red;
+                                        heart -= 1;
+                                      }
+                                    });
+                                    if (currentQuestionIndex <
+                                        cauHoi.length - 1) {
+                                      Future.delayed(const Duration(seconds: 1),
+                                          () {
+                                        setState(() {
+                                          gotoNextQuestion();
+                                        });
+                                      });
+                                    } else {
+                                      timer!.cancel();
+                                      if (currentQuestionIndex > 10 &&
+                                          cauHoi[currentQuestionIndex]
+                                                  .cauHoi
+                                                  .length >
+                                              10) {
+                                        customAlert(
+                                                context: context,
+                                                onPressed: () {
+                                                  setState(() {
+                                                    timer!.cancel();
+                                                    resetGame();
+                                                  });
+                                                  nextpage(
+                                                      context,
+                                                      HomeScreen(
+                                                          email: this
+                                                              .widget
+                                                              .email));
+                                                },
+                                                title: 'Bạn đã hoàn thành ',
+                                                desc:
+                                                    "Chúc mừng bạn đã có $points vàng.",
+                                                text: 'Màn hình chính')
+                                            .show();
+                                      }
+                                    }
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 20),
+                                    alignment: Alignment.center,
+                                    width: size.width - 100,
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: optionsColor1[index],
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: headingText(
+                                      color: blue,
+                                      size: 18,
+                                      text: a,
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      if (cauHoi[currentQuestionIndex]
+                                              .dap_an_dung
+                                              .toString() ==
+                                          b) {
+                                        optionsColor2[index] = Colors.green;
+                                        points += 1;
+                                      } else {
+                                        optionsColor2[index] = Colors.red;
+                                        heart -= 1;
+                                      }
+                                      if (currentQuestionIndex <
+                                          cauHoi.length - 1) {
+                                        Future.delayed(
+                                            const Duration(seconds: 1), () {
+                                          setState(() {
+                                            gotoNextQuestion();
+                                          });
+                                        });
+                                      } else {
+                                        timer!.cancel();
+>>>>>>> 47836af7ffdf6154d77ea0259968c8fb3f8f2476
                                         customAlert(
                                                 context: context,
                                                 onPressed: () {
@@ -662,6 +823,218 @@ class _PlayScreenState extends State<PlayScreen> {
                                                 text: 'Xem chi tiết')
                                             .show();
                                       }
+<<<<<<< HEAD
+=======
+                                    });
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 20),
+                                    alignment: Alignment.center,
+                                    width: size.width - 100,
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: optionsColor2[index],
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: headingText(
+                                      color: blue,
+                                      size: 18,
+                                      text: b,
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      if (cauHoi[currentQuestionIndex]
+                                              .dap_an_dung
+                                              .toString() ==
+                                          c) {
+                                        optionsColor3[index] = Colors.green;
+                                        points += 1;
+                                      } else {
+                                        optionsColor3[index] = Colors.red;
+                                        heart -= 1;
+                                      }
+                                      if (currentQuestionIndex <
+                                          cauHoi.length - 1) {
+                                        Future.delayed(
+                                            const Duration(seconds: 1), () {
+                                          setState(() {
+                                            gotoNextQuestion();
+                                          });
+                                        });
+                                      } else {
+                                        timer!.cancel();
+                                        customAlert(
+                                                context: context,
+                                                onPressed: () {
+                                                  setState(() {
+                                                    timer!.cancel();
+                                                    resetGame();
+                                                  });
+                                                  nextpage(
+                                                      context,
+                                                      HomeScreen(
+                                                          email: this
+                                                              .widget
+                                                              .email));
+                                                },
+                                                title: 'Bạn đã hoàn thành ',
+                                                desc:
+                                                    "Chúc mừng bạn đã có $points vàng. Hãy thử lại nào.",
+                                                text: 'Đồng ý')
+                                            .show();
+                                      }
+                                    });
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 20),
+                                    alignment: Alignment.center,
+                                    width: size.width - 100,
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: optionsColor3[index],
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: headingText(
+                                      color: blue,
+                                      size: 18,
+                                      text: c,
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      if (cauHoi[currentQuestionIndex]
+                                              .dap_an_dung
+                                              .toString() ==
+                                          d) {
+                                        optionsColor4[index] = Colors.green;
+                                        points += 1;
+                                      } else {
+                                        optionsColor4[index] = Colors.red;
+                                        heart -= 1;
+                                      }
+                                      if (currentQuestionIndex <
+                                          cauHoi.length - 1) {
+                                        Future.delayed(
+                                            const Duration(seconds: 1), () {
+                                          setState(() {
+                                            gotoNextQuestion();
+                                          });
+                                        });
+                                      } else {
+                                        timer!.cancel();
+                                        customAlert(
+                                                context: context,
+                                                onPressed: () {
+                                                  setState(() {
+                                                    timer!.cancel();
+                                                    resetGame();
+                                                  });
+                                                  nextpage(
+                                                      context,
+                                                      HomeScreen(
+                                                          email: this
+                                                              .widget
+                                                              .email));
+                                                },
+                                                title: 'Bạn đã hoàn thành ',
+                                                desc:
+                                                    "Chúc mừng bạn đã có $points vàng. Hãy thử lại nào.",
+                                                text: 'Đồng ý')
+                                            .show();
+                                      }
+                                    });
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 20),
+                                    alignment: Alignment.center,
+                                    width: size.width - 100,
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: optionsColor4[index],
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: headingText(
+                                      color: blue,
+                                      size: 18,
+                                      text: d,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              helpingIconsRow(
+                                is5050UsedValue: is5050Used,
+                                isSwitchUsedValue: isSwitchUsed,
+                                functionOF5050: () {
+                                  setState(() {
+                                    String dapAnDung =
+                                        cauHoi[currentQuestionIndex]
+                                            .dap_an_dung
+                                            .toString();
+                                    if (is5050Used == false) {
+                                      int myCount = 0;
+                                      for (int i = 0; i < 1; i++) {
+                                        if (cauHoi[currentQuestionIndex]
+                                                    .dap_an_1[i] !=
+                                                cauHoi[currentQuestionIndex]
+                                                    .dap_an_dung &&
+                                            myCount <= 1 &&
+                                            a == dapAnDung) {
+                                          b = '';
+                                          c = '';
+
+                                          myCount++;
+                                        } else if (cauHoi[currentQuestionIndex]
+                                                    .dap_an_2[i] !=
+                                                cauHoi[currentQuestionIndex]
+                                                    .dap_an_dung &&
+                                            myCount <= 1 &&
+                                            b == dapAnDung) {
+                                          c = ' ';
+                                          d = ' ';
+                                          myCount++;
+                                        } else if (cauHoi[currentQuestionIndex]
+                                                    .dap_an_3[i] !=
+                                                cauHoi[currentQuestionIndex]
+                                                    .dap_an_dung &&
+                                            myCount <= 1 &&
+                                            c == dapAnDung) {
+                                          a = ' ';
+                                          d = ' ';
+                                          myCount++;
+                                        } else if (cauHoi[currentQuestionIndex]
+                                                    .dap_an_4[i] !=
+                                                cauHoi[currentQuestionIndex]
+                                                    .dap_an_dung &&
+                                            myCount <= 1 &&
+                                            d == dapAnDung) {
+                                          a = ' ';
+                                          c = ' ';
+                                          myCount++;
+                                        }
+                                      }
+                                      is5050Used = false;
+                                    }
+                                  });
+                                },
+                                switchFunction: () {
+                                  setState(() {
+                                    if (isSwitchUsed == false) {
+                                      currentQuestionIndex += 1;
+                                      isSwitchUsed = true;
+>>>>>>> 47836af7ffdf6154d77ea0259968c8fb3f8f2476
                                     }
                                   });
                                 },

@@ -28,6 +28,7 @@ class _LoginAppState extends State<LoginApp> {
 
   late bool _showPass = false;
 
+
   @override
   Widget build(BuildContext context) {
     const edgeInsets = EdgeInsets.fromLTRB(10, 10, 10, 10);
@@ -153,6 +154,11 @@ class _LoginAppState extends State<LoginApp> {
                         )),
                       ]),
                     ),
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 47836af7ffdf6154d77ea0259968c8fb3f8f2476
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                       child: Center(
